@@ -1,8 +1,8 @@
-##This is the privacyIDEA-PHP-SDK.
+## This is the privacyIDEA-PHP-SDK.
 
 This library will help you to connect your plugin to the privacyIDEA server using REST APIs.
 
-##Requirements
+## Requirements
 
 To use our API library you have to install curl on your machine or add curl/curl using Composer. 
 To do it with Composer simply copy that line to your terminal in your project directory:
