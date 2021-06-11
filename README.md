@@ -1,4 +1,4 @@
-## This is the privacyIDEA-PHP-SDK.
+## This is the privacyIDEA-PHP-SDK
 
 This library will help you to connect your plugin to the privacyIDEA server using REST APIs.
 
