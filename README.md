@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ##This is the privacyIDEA-PHP-SDK.
 
 This library will help you to connect your plugin to the privacyIDEA server using REST APIs.
@@ -13,3 +14,6 @@ Remember that you have to install composer first. If you will know how to do it,
 https://getcomposer.org/doc/00-intro.md
 
 ##
+=======
+# sdk-php
+>>>>>>> 0fa31f30d5b9a155885cd53bac2ce61c40991841
