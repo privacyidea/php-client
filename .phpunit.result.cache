@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"PrivacyIDEATest::testGetAuthToken":0.08,"PrivacyIDEATest::testEnrollToken":0.118,"PrivacyIDEATest::testPollTransaction":0.052,"PrivacyIDEATest::testTriggerChallenge":0.094,"PrivacyIDEATest::testValidateCheck":0.075}}
