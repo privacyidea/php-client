@@ -9,5 +9,7 @@ To do it with Composer simply copy that line to your Terminal in your project di
 
 `composer require curl/curl`
 
-Remember that you have to install Composer first. Required version is >=2.0. If you will know how to install Composer, check this documentation:
+Remember that you have to install Composer first. If you will know how to install Composer, check this documentation:
 https://getcomposer.org/doc/00-intro.md
+
+Required Composer version is >=2.0.
