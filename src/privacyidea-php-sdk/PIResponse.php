@@ -124,28 +124,27 @@ class PIResponse
 
     /**
      * Get OTP message if OTP token(s) triggered
-     * @return array
+     * @return string|bool
      */
-    public function otpMessage(): array
+    public function otpMessage()
     {
-        $ret = array();
         foreach ($this->multi_challenge as $challenge) {
-            if ($challenge['type'] !== "push" || $challenge['type'] !== "webauthn") {
-                array_push($ret, $challenge['message']);
+            if ($challenge->type !== "push" && $challenge->type !== "webauthn") {
+                return $challenge->message;
             }
         }
-        return array_unique($ret);
+            return false;
     }
 
     /**
      * Get push message if push token triggered
-     * @return string
+     * @return string|bool
      */
-    public function pushMessage(): string
+    public function pushMessage()
     {
         foreach ($this->multi_challenge as $challenge) {
-            if ($challenge['type'] === "push") {
-                return $challenge['message'];
+            if ($challenge->type === "push") {
+                return $challenge->message;
             }
         }
         return false;
@@ -158,7 +157,7 @@ class PIResponse
     public function pushAvailability(): bool
     {
         foreach ($this->multi_challenge as $challenge) {
-            if ($challenge['type'] === "push") {
+            if ($challenge->type === "push") {
                 return true;
             }
         }

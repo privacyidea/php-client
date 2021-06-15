@@ -63,6 +63,13 @@ class PrivacyIDEATest extends TestCase
                     "serial":"OATH00016327",
                     "transaction_id":"08282050332563531714",
                     "type":"hotp"
+                 },
+                  {
+                    "attributes":null,
+                    "message":"please verify push",
+                    "serial":"PIPU1092340ß1231",
+                    "transaction_id":"08282050332563531714",
+                    "type":"push"
                  }
               ],
               "serial":"TOTP0002A944",
@@ -127,6 +134,12 @@ class PrivacyIDEATest extends TestCase
         $this->assertEquals("OATH00016327", $response->multi_challenge[0]->serial, "Serial did not match.");
         $this->assertEquals("hotp", $response->multi_challenge[0]->type, "Type did not match.");
         $this->assertNull($response->multi_challenge[0]->attributes, "attributes did not match.");
-    }
 
+        // Test PIResponse methods: triggeredTokenTypes, pushAvailability, pushMessage, otpMessage
+        $this->assertIsArray($response->triggeredTokenTypes());
+        $this->assertEquals(["hotp","push"], $response->triggeredTokenTypes());
+        $this->assertTrue($response->pushAvailability());
+        $this->assertEquals("please verify push", $response->pushMessage());
+        $this->assertEquals("please enter otp: ", $response->otpMessage());
+    }
 }

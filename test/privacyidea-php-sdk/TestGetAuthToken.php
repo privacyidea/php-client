@@ -80,5 +80,4 @@ class PrivacyIDEATest extends TestCase
         $response = $this->pi->getAuthToken();
         $this->assertFalse($response);
     }
-
 }

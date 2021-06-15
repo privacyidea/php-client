@@ -67,5 +67,4 @@ class PrivacyIDEATest extends TestCase
 
         $this->assertTrue($response, "Value is not true as expected.");
     }
-
 }

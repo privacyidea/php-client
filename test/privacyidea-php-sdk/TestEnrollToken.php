@@ -205,6 +205,4 @@ class PrivacyIDEATest extends TestCase
         $this->assertObjectHasAttribute('detail', $response, "Object have no detail attribute.");
         $this->assertEquals("data:image/png;base64,iVBORw0", $response->detail->googleurl->img, "Object have no image data.");
     }
-
-
 }

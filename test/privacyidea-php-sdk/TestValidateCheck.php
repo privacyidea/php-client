@@ -117,6 +117,56 @@ class PrivacyIDEATest extends TestCase
         $this->assertEquals("OATH00016327", $response->multi_challenge[0]->serial, "Serial did not match.");
         $this->assertEquals("hotp", $response->multi_challenge[0]->type, "Type did not match.");
         $this->assertNull($response->multi_challenge[0]->attributes, "attributes did not match.");
-    }
 
+        // Test PIResponse methods: pushAvailability, pushMessage, otpMessage
+        $this->assertFalse($response->pushAvailability());
+        $this->assertFalse($response->pushMessage());
+
+        $respValidateCheck = '{
+          "detail": {
+            "attributes": null,
+            "message": "Please enter OTP: ",
+            "messages": [
+              "Please enter OTP: "
+            ],
+            "multi_challenge": [
+              {
+                  "attributes":null,
+                  "message":"please verify push",
+                  "serial":"PIPU1092340ß1231",
+                  "transaction_id":"08282050332563531714",
+                  "type":"push"
+              }
+            ],
+            "serial": "OATH00016327",
+            "threadid": 139868461995776,
+            "transaction_id": "10254108800156191660",
+            "transaction_ids": [
+              "10254108800156191660"
+            ],
+            "type": "hotp"
+          },
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "status": true,
+            "value": false
+          },
+          "version": "privacyIDEA 3.5.2",
+          "versionnumber": "3.5.2",
+          "signature": "rsa_sha256_pss:12345"
+        }';
+
+        $this->http->mock
+            ->when()
+            ->methodIs('POST')
+            ->pathIs('/validate/check')
+            ->then()
+            ->body($respValidateCheck)
+            ->end();
+        $this->http->setUp();
+
+        $response = $this->pi->validateCheck(['user' => 'testUser', 'pass' => 'testPass'], "1234567890");
+        $this->assertFalse($response->otpMessage());
+    }
 }
