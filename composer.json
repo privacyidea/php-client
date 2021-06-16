@@ -10,14 +10,15 @@
   ],
   "repositories": [
     {
-      "type": "git",
-      "url": "https://github.com/lukasmatusiewicz/privacyidea-php-sdk"
+      "type": "vcs",
+      "url": "https://github.com/privacyidea/sdk-php"
     }
   ],
   "require": {
     "php": ">=7.4",
     "phpunit/phpunit": "^9.5",
-    "internations/http-mock": "^0.14.0",
-    "curl/curl": ">=2.0.0"
+    "internations/http-mock": ">=0.14.0",
+    "curl/curl": "*",
+    "ext-json": "*"
   }
 }
