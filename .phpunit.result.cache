@@ -1,1 +1,0 @@
-{"version":1,"defects":{"PrivacyIDEATest::testTriggerChallenge":4,"PrivacyIDEATest::testValidateCheck":3},"times":{"PrivacyIDEATest::testGetAuthToken":0.349,"PrivacyIDEATest::testEnrollToken":0.596,"PrivacyIDEATest::testPollTransaction":0.202,"PrivacyIDEATest::testTriggerChallenge":0.462,"PrivacyIDEATest::testValidateCheck":0.491}}
