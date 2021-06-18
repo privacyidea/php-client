@@ -19,6 +19,7 @@
     "phpunit/phpunit": "^9.5",
     "internations/http-mock": ">=0.14.0",
     "curl/curl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-curl": "*"
   }
 }

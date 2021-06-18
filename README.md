@@ -4,12 +4,24 @@ This library will help you to connect your Plugin to the privacyIDEA server usin
 
 ## Requirements
 
-To use our API Library you have to install Curl on your machine or add curl/curl using Composer. 
-To do it with Composer simply copy that line to your Terminal in your project directory:
+To use our API Library you have to install curl on your machine. If you have installed our SDK
+with Composer you don't need to think about it, because Composer will do it for you automatically.
+To avoid bugs we will also please you to install PHP >=7.4.
 
-`composer require curl/curl`
+## Composer
 
-Remember that you have to install Composer first. If you will know how to install Composer, check this documentation:
+To install our repository with Composer, run this command in Terminal:
+
+`composer require privacyidea/privacyidea-php-sdk`
+
+Next, you have to run:
+
+`composer update`
+
+You can also decide which version of our package you want to install.
+For more information read the Composer documentation.
+
+To install Composer follow this link:
 https://getcomposer.org/doc/00-intro.md
 
 Required Composer version is >=2.0.
