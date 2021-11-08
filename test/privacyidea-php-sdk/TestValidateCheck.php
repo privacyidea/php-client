@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 require_once('../../src/privacyidea-php-sdk/SDK-Autoloader.php');
 require_once('../../vendor/autoload.php');
 
@@ -10,28 +8,27 @@ use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 
 class PrivacyIDEATest extends TestCase
 {
-    private PrivacyIDEA $pi;
+    private $pi;
 
     use HttpMockTrait;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         static::setUpHttpMockBeforeClass('8082', 'localhost');
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         static::tearDownHttpMockAfterClass();
     }
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://127.0.0.1:8082");
-        $this->pi->disableLog = true;
     }
 
-    public function tearDown(): void
+    public function tearDown()
     {
         $this->tearDownHttpMock();
     }
