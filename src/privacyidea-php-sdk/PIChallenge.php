@@ -2,24 +2,18 @@
 
 class PIChallenge
 {
-    /**
-     * @var string Token's type.
-     */
-    public $type  = "";
-    /**
-     * @var string Message from single challenge.
-     */
+    /* @var string Token's type. */
+    public $type = "";
+    /* @var string Message from single challenge. */
     public $message = "";
-    /**
-     * @var string
-     */
-    public $transaction_id = "";
-    /**
-     * @var string Token's serial.
-     */
+    /* @var string */
+    public $transactionID = "";
+    /* @var string Token's serial. */
     public $serial = "";
-    /**
-     * @var string
-     */
+    /* @var string */
     public $attributes = "";
+    /* @var string JSON format */
+    public $webAuthnSignRequest = "";
+    /* @var string JSON format */
+    public $u2fSignRequest = "";
 }

@@ -1,50 +1,36 @@
 <?php
 
-require_once 'SDK-Autoloader.php';
-
 class PIResponse
 {
-    /**
-     * @var string All tokens messages which are sended by PI and can be used in UI to help user interact with service.
-     */
+    /* @var string All tokens messages which are sent by PI and can be used in UI to help user interact with service. */
     public $messages = "";
-    /**
-     * @var string Transaction ID which is needed by some PI API requests.
-     */
-    public $transaction_id = "";
-    /**
-     * @var string This is the raw PI response in JSON format.
-     */
+    /* @var string Transaction ID which is needed by some PI API requests. */
+    public $transactionID = "";
+    /* @var string This is the raw PI response in JSON format. */
     public $raw = "";
-    /**
-     * @var array Here are all triggered challenges delivered as object of PIChallenge class.
-     */
-    public $multi_challenge = array();
-    /**
-     * @var bool The status indicates if the request was processed correctly by the server.
-     */
+    /* @var array Here are all triggered challenges delivered as object of PIChallenge class. */
+    public $multiChallenge = array();
+    /* @var bool The status indicates if the request was processed correctly by the server. */
     public $status = false;
-    /**
-     * @var bool The value tell us if authentication was successfull.
-     */
+    /* @var bool The value tell us if authentication was successful. */
     public $value = false;
-    /**
-     * @var array All interessing details about user which can be shown in the UI at the end of the authentication.
-     */
+    /* @var array All interesting details about user which can be shown in the UI at the end of the authentication. */
     public $detailAndAttributes = array();
-    /**
-     * @var string PI error messages with error codes will be delivered here.
-     */
-    public $error;
+    /* @var string PI error code will be delivered here. */
+    public $errorCode;
+    /* @var string PI error message will be delivered here. */
+    public $errorMessage;
 
     /**
      * Prepare a good readable PI response and return it as an object
      * @param $json
-     * @param \PrivacyIDEA $privacyIDEA
-     * @return \PIResponse|null
+     * @param PrivacyIDEA $privacyIDEA
+     * @return PIResponse|null
      */
-    public static function fromJSON($json, PrivacyIDEA $privacyIDEA) // No mixed type declaration possible here
+    public static function fromJSON($json, PrivacyIDEA $privacyIDEA)
     {
+        assert('string' === gettype($json));
+
         if ($json == null || $json == "") {
             $privacyIDEA->errorLog("PrivacyIDEA - PIResponse: No response from PI.");
             return null;
@@ -63,9 +49,10 @@ class PIResponse
         // Prepare raw JSON Response if needed
         $ret->raw = $json;
 
-        // Possibility to show an error if no value
+        // Possibility to show an error message from PI server if no value
         if (!isset($map['result']['value'])) {
-            $ret->error = $map['result']['error']['message'];
+            $ret->errorCode = $map['result']['error']['code'];
+            $ret->errorMessage = $map['result']['error']['message'];
             return $ret;
         }
 
@@ -74,9 +61,8 @@ class PIResponse
             $ret->messages = implode(", ", array_unique($map['detail']['messages'])) ?: "";
         }
         if (isset($map['detail']['transaction_id'])) {
-            $ret->transaction_id = $map['detail']['transaction_id'];
+            $ret->transactionID = $map['detail']['transaction_id'];
         }
-
         $ret->status = $map['result']['status'] ?: false;
         $ret->value = $map['result']['value'] ?: false;
 
@@ -97,70 +83,108 @@ class PIResponse
             $mc = $map['detail']['multi_challenge'];
             foreach ($mc as $challenge) {
                 $tmp = new PIChallenge();
-                $tmp->transaction_id = $challenge['transaction_id'];
+                $tmp->transactionID = $challenge['transaction_id'];
                 $tmp->message = $challenge['message'];
                 $tmp->serial = $challenge['serial'];
                 $tmp->type = $challenge['type'];
                 $tmp->attributes = $challenge['attributes'];
-                array_push($ret->multi_challenge, $tmp);
+
+                if ($tmp->type === "webauthn") {
+                    $t = $challenge['attributes']['webAuthnSignRequest'];
+                    $tmp->webAuthnSignRequest = json_encode($t);
+                }
+
+                if($tmp->type === "u2f") {
+                    $t = $challenge['attributes']['u2fSignRequest'];
+                    $tmp->u2fSignRequest = json_encode($t);
+                }
+
+                array_push($ret->multiChallenge, $tmp);
             }
         }
         return $ret;
     }
 
     /**
-     * Get array with all triggered token types
+     * Get array with all triggered token types.
      * @return array
      */
-    public function triggeredTokenTypes(): array
+    public function triggeredTokenTypes()
     {
         $ret = array();
-        foreach ($this->multi_challenge as $challenge) {
-
+        foreach ($this->multiChallenge as $challenge) {
             array_push($ret, $challenge->type);
         }
         return array_unique($ret);
     }
 
     /**
-     * Get OTP message if OTP token(s) triggered
-     * @return string|bool
+     * Get OTP message if OTP token(s) triggered.
+     * @return string
      */
     public function otpMessage()
     {
-        foreach ($this->multi_challenge as $challenge) {
+        foreach ($this->multiChallenge as $challenge) {
             if ($challenge->type !== "push" && $challenge->type !== "webauthn") {
                 return $challenge->message;
             }
         }
-            return false;
+        return false;
     }
 
     /**
-     * Get push message if push token triggered
-     * @return string|bool
+     * Get push message if push token triggered.
+     * @return string
      */
     public function pushMessage()
     {
-        foreach ($this->multi_challenge as $challenge) {
+        foreach ($this->multiChallenge as $challenge) {
             if ($challenge->type === "push") {
                 return $challenge->message;
             }
         }
-        return false;
+        return "";
     }
 
     /**
-     * Check if push token is available
-     * @return bool
+     * Get WebAuthn message if that kind of token triggered.
+     * @return string
      */
-    public function pushAvailability(): bool
+    public function webauthnMessage()
     {
-        foreach ($this->multi_challenge as $challenge) {
-            if ($challenge->type === "push") {
-                return true;
+        foreach ($this->multiChallenge as $challenge) {
+            if ($challenge->type === "webauthn") {
+                return $challenge->message;
             }
         }
-        return false;
+        return "";
+    }
+
+    /**
+     * Get WebAuthn Sign Request which comes in PIResponse if WebAuthn token is triggered.
+     * @return string
+     */
+    public function webAuthnSignRequest()
+    {
+        $ret = "";
+        foreach ($this->multiChallenge as $challenge) {
+            if ($challenge->type === "webauthn") {
+                $ret = $challenge->webAuthnSignRequest;
+                break;
+            }
+        }
+        return $ret;
+    }
+
+    public function u2fSignRequest()
+    {
+        $ret = "";
+        foreach ($this->multiChallenge as $challenge) {
+            if ($challenge->type === "u2f") {
+                $ret = $challenge->u2fSignRequest;
+                break;
+            }
+        }
+        return $ret;
     }
 }

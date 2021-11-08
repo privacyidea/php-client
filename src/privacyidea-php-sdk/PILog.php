@@ -6,7 +6,7 @@
  */
 interface PILog
 {
-    public function pi_debug($message);
+    public function piDebug($message);
 
-    public function pi_error($message);
+    public function piError($message);
 }
