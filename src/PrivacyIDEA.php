@@ -102,9 +102,9 @@ class PrivacyIDEA
             }
 
             //Call send_request function to handle an API Request using $parameters and return it.
-            $response = $this->sendRequest($params, array(''), 'POST', '/validate/check');
+            $response = $this->sendRequest($params, array(''), 'POST', '/validate/samlcheck');
 
-            //Return the response from /validate/check as PIResponse object
+            //Return the response from /validate/samlcheck as PIResponse object
             $ret = PIResponse::fromJSON($response, $this);
             if ($ret == null)
             {
@@ -250,7 +250,7 @@ class PrivacyIDEA
     }
 
     /**
-     * Sends a request to /validate/check with the data required to authenticate a WebAuthn token.
+     * Sends a request to /validate/samlcheck with the data required to authenticate a WebAuthn token.
      *
      * @param string $username
      * @param string $transactionID
@@ -273,7 +273,7 @@ class PrivacyIDEA
         if (!empty($username) || !empty($transactionID))
         {
 
-            // Compose standard validate/check params
+            // Compose standard validate/samlcheck params
             $params["user"] = $username;
             $params["pass"] = "";
             $params["transaction_id"] = $transactionID;
@@ -302,9 +302,9 @@ class PrivacyIDEA
 
             $header = array("Origin:" . $origin);
 
-            $response = $this->sendRequest($params, $header, 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $header, 'POST', '/validate/samlcheck');
 
-            //Return the response from /validate/check as PIResponse object
+            //Return the response from /validate/samlcheck as PIResponse object
             $ret = PIResponse::fromJSON($response, $this);
 
             if ($ret == null)
@@ -322,7 +322,7 @@ class PrivacyIDEA
     }
 
     /**
-     * Sends a request to /validate/check with the data required to authenticate a U2F token.
+     * Sends a request to /validate/samlcheck with the data required to authenticate a U2F token.
      *
      * @param string $username
      * @param string $transactionID
@@ -343,7 +343,7 @@ class PrivacyIDEA
         if (!empty($username) || !empty($transactionID) || !empty($u2fSignResponse))
         {
 
-            // Compose standard validate/check params
+            // Compose standard validate/samlcheck params
             $params["user"] = $username;
             $params["pass"] = "";
             $params["transaction_id"] = $transactionID;
@@ -358,9 +358,9 @@ class PrivacyIDEA
             $params[CLIENTDATA] = $tmp["clientData"];
             $params[SIGNATUREDATA] = $tmp["signatureData"];
 
-            $response = $this->sendRequest($params, array(), 'POST', '/validate/check');
+            $response = $this->sendRequest($params, array(), 'POST', '/validate/samlcheck');
 
-            //Return the response from /validate/check as PIResponse object
+            //Return the response from /validate/samlcheck as PIResponse object
             $ret = PIResponse::fromJSON($response, $this);
 
             if ($ret == null)
@@ -432,7 +432,7 @@ class PrivacyIDEA
      * @param $params array request parameters in an array
      * @param $headers array headers fields in array
      * @param $httpMethod string
-     * @param $endpoint string endpoint of the privacyIDEA API (e.g. /validate/check)
+     * @param $endpoint string endpoint of the privacyIDEA API (e.g. /validate/samlcheck)
      * @return string returns string with response from server or an empty string if error occurs
      * @throws PIBadRequestException
      */

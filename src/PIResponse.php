@@ -64,6 +64,12 @@ class PIResponse
         {
             $ret->messages = implode(", ", array_unique($map['detail']['messages'])) ?: "";
         }
+
+        if (isset($map['detail']['message']))
+        {
+            $ret->messages = $map['detail']['message'];
+        }
+
         if (isset($map['detail']['transaction_id']))
         {
             $ret->transactionID = $map['detail']['transaction_id'];
@@ -75,6 +81,19 @@ class PIResponse
         if (!empty($map['detail']['user']))
         {
             $attributes = $map['detail']['user'];
+            $detail = $map['detail'];
+
+            if (isset($attributes['username']))
+            {
+                $attributes['realm'] = $map['detail']['user-realm'] ?: "";
+                $attributes['resolver'] = $map['detail']['user-resolver'] ?: "";
+            }
+            $ret->detailAndAttributes = array("detail" => $detail, "attributes" => $attributes);
+        }
+
+        if (!empty($map['result']['value']['attributes']))
+        {
+            $attributes = $map['result']['value']['attributes'];
             $detail = $map['detail'];
 
             if (isset($attributes['username']))
