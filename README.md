@@ -1,10 +1,10 @@
-## This is the privacyIDEA-PHP-SDK
+## This is the privacyIDEA PHP Client
 
-This library will help you to connect your Plugin to the privacyIDEA server using REST APIs.
+This library will help you to connect your plugin to the privacyIDEA server using REST APIs.
 
 ## Requirements
 
-To use our API Library you have to install curl on your machine. If you have installed our SDK
+To use our client lib you have to install curl on your machine. If you have installed our client
 with Composer you don't need to think about it, because Composer will do it for you automatically.
 To avoid bugs we also advise you to install PHP >=7.3.
 
