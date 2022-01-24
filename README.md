@@ -14,7 +14,7 @@ You can add our library to your repository as a submodule or install it using Co
 
 To install our repository with Composer, run this command in Terminal:
 
-`composer require privacyidea/privacyidea-php-sdk`
+`composer require privacyidea/privacyidea-php-client`
 
 Next, you have to run:
 

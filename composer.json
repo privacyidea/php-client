@@ -1,6 +1,6 @@
 {
-  "name": "privacyidea/privacyidea-php-sdk",
-  "description": "This is the privacyIDEA-PHP-SDK. The library that will help you to connect your plugin to the privacyIDEA server using REST APIs.",
+  "name": "privacyidea/privacyidea-php-client",
+  "description": "This is the privacyIDEA-PHP-Client. The library that will help you to connect your plugin to the privacyIDEA server using REST APIs.",
   "minimum-stability": "stable",
   "authors": [
     {
@@ -11,7 +11,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/privacyidea/sdk-php"
+      "url": "https://github.com/privacyidea/sdk-client"
     }
   ],
   "require": {

@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../src/privacyidea-php-sdk/SDK-Autoloader.php');
+require_once('../../src/privacyidea-php-client/SDK-Autoloader.php');
 require_once('../../vendor/autoload.php');
 
 use PHPUnit\Framework\TestCase;
