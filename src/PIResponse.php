@@ -189,7 +189,16 @@ class PIResponse
         {
             if ($challenge->type === "webauthn")
             {
-                $ret = $challenge->webAuthnSignRequest;
+                $t = json_decode($challenge->webAuthnSignRequest);
+                $t->allowCredentials = null;
+                foreach ($this->multiChallenge as $chall)
+                {
+                    if ($chall->type === "webauthn")
+                    {
+                        $t->allowCredentials[] = $chall->attributes['webAuthnSignRequest']['allowCredentials'][0];
+                    }
+                }
+                $ret = json_encode($t);
                 break;
             }
         }
