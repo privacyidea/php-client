@@ -184,16 +184,23 @@ class PIResponse
      */
     public function webAuthnSignRequest()
     {
-        $ret = "";
+        $arr = [];
+        $webauthn = "";
         foreach ($this->multiChallenge as $challenge)
         {
             if ($challenge->type === "webauthn")
             {
-                $ret = $challenge->webAuthnSignRequest;
-                break;
+                $t = json_decode($challenge->webAuthnSignRequest);
+                if (empty($webauthn))
+                {
+                    $webauthn = $t;
+                }
+                $arr[] = $challenge->attributes['webAuthnSignRequest']['allowCredentials'][0];
             }
         }
-        return $ret;
+        $webauthn->allowCredentials = $arr;
+
+        return json_encode($webauthn);
     }
 
     public function u2fSignRequest()
