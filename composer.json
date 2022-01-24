@@ -8,6 +8,11 @@
       "email": "lukas.matusiewicz@netknights.it"
     }
   ],
+  "autoload": {
+      "psr-4": {
+          "PrivacyIdea\\PHPClient\\": "src"
+      }
+  },
   "repositories": [
     {
       "type": "vcs",
