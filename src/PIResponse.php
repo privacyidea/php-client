@@ -1,5 +1,7 @@
 <?php
 
+namespace PrivacyIdea\PHPClient;
+
 class PIResponse
 {
     /* @var string All tokens messages which are sent by PI and can be used in UI to help user interact with service. */

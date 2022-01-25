@@ -1,4 +1,7 @@
 <?php
+
+namespace PrivacyIdea\PHPClient;
+
 const AUTHENTICATORDATA = "authenticatordata";
 const CLIENTDATA = "clientdata";
 const SIGNATUREDATA = "signaturedata";

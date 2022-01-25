@@ -1,5 +1,7 @@
 <?php
 
+namespace PrivacyIdea\PHPClient;
+
 class PIChallenge
 {
     /* @var string Token's type. */
