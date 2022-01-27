@@ -1,6 +1,7 @@
 {
   "name": "privacyidea/privacyidea-php-client",
   "description": "This is the privacyIDEA-PHP-Client. The library that will help you to connect your plugin to the privacyIDEA server using REST APIs.",
+  "license": "AGPL-3.0-or-later",
   "minimum-stability": "stable",
   "authors": [
     {
