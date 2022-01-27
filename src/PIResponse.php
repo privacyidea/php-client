@@ -96,7 +96,10 @@ class PIResponse
                 $tmp->message = $challenge['message'];
                 $tmp->serial = $challenge['serial'];
                 $tmp->type = $challenge['type'];
-                $tmp->attributes = $challenge['attributes'];
+                if (isset($challenge['attributes']))
+                {
+                    $tmp->attributes = $challenge['attributes'];
+                }
 
                 if ($tmp->type === "webauthn")
                 {
