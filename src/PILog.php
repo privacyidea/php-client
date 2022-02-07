@@ -1,5 +1,7 @@
 <?php
 
+namespace PrivacyIdea\PHPClient;
+
 /**
  * Interface PILog
  * Call the functions that collect debug and error messages
