@@ -9,15 +9,13 @@ spl_autoload_register('autoLoader');
 
 function autoLoader($className)
 {
-    $classNameParts = explode("\\");
-    $classNameOnly = $classNameParts[count($classNameParts) - 1];
-    $fullPath = dirname(__FILE__) . "/" . $classNameOnly . ".php";
+    $fullPath = dirname(__FILE__) . "/" . $className . ".php";
     if (file_exists($fullPath))
     {
         require_once $fullPath;
-        class_alias($className, $classNameOnly, false);
         return true;
-    } else
+    }
+    else
     {
         return false;
     }

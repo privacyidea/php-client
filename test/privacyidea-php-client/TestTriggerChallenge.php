@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../src/SDK-Autoloader.php');
+require_once('../../src/Client-Autoloader.php');
 require_once('../../vendor/autoload.php');
 
 use PHPUnit\Framework\TestCase;
