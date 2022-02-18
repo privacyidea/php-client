@@ -6,6 +6,8 @@ class PIResponse
 {
     /* @var string All tokens messages which are sent by PI and can be used in UI to help user interact with service. */
     public $messages = "";
+    /* @var string PI message. */
+    public $message = "";
     /* @var string Transaction ID which is needed by some PI API requests. */
     public $transactionID = "";
     /* @var string This is the raw PI response in JSON format. */
@@ -65,6 +67,10 @@ class PIResponse
         if (isset($map['detail']['messages']))
         {
             $ret->messages = implode(", ", array_unique($map['detail']['messages'])) ?: "";
+        }
+        if (isset($map['detail']['message']))
+        {
+            $ret->message = $map['detail']['message'];
         }
         if (isset($map['detail']['transaction_id']))
         {
