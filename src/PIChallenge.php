@@ -1,21 +1,27 @@
 <?php
 
-namespace PrivacyIdea\PHPClient;
+//namespace PrivacyIdea\PHPClient;
 
 class PIChallenge
 {
-    /* @var string Token's type. */
+    /* @var string Type of the token this challenge is for. */
     public $type = "";
-    /* @var string Message from single challenge. */
+
+    /* @var string Message for this challenge. */
     public $message = "";
-    /* @var string */
+
+    /* @var string TransactionId to reference this challenge in later requests. */
     public $transactionID = "";
-    /* @var string Token's serial. */
+
+    /* @var string Serial of the token this challenge is for. */
     public $serial = "";
-    /* @var string */
+
+    /* @var string Arbitrary attributes that can be appended to the challenge by the server. */
     public $attributes = "";
+
     /* @var string JSON format */
     public $webAuthnSignRequest = "";
+
     /* @var string JSON format */
     public $u2fSignRequest = "";
 }
