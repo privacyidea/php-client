@@ -1,35 +1,45 @@
 <?php
 
-namespace PrivacyIdea\PHPClient;
+//namespace PrivacyIdea\PHPClient;
 
 class PIResponse
 {
-    /* @var string All tokens messages which are sent by PI and can be used in UI to help user interact with service. */
+    /* @var string Combined messages of all triggered token. */
     public $messages = "";
-    /* @var string PI message. */
+
+    /* @var string Message from the response. Should be shown to the user. */
     public $message = "";
-    /* @var string Transaction ID which is needed by some PI API requests. */
+
+    /* @var string TransactionID is used to reference the challenges contained in this response in later requests. */
     public $transactionID = "";
-    /* @var string This is the raw PI response in JSON format. */
+
+    /* @var string Raw response in JSON format. */
     public $raw = "";
-    /* @var array Here are all triggered challenges delivered as object of PIChallenge class. */
+
+    /* @var array Array of PIChallenge objects representing triggered token challenges. */
     public $multiChallenge = array();
-    /* @var bool The status indicates if the request was processed correctly by the server. */
+
+    /* @var bool Status indicates if the request was processed successfully by the server. */
     public $status = false;
-    /* @var bool The value tell us if authentication was successful. */
+
+    /* @var bool Value is true if the authentication was successful. */
     public $value = false;
-    /* @var array All interesting details about user which can be shown in the UI at the end of the authentication. */
+
+    /* @var array Additional attributes of the user that can be sent by the server. */
     public $detailAndAttributes = array();
-    /* @var string PI error code will be delivered here. */
+
+    /* @var string If an error occurred, the error code will be set. */
     public $errorCode;
-    /* @var string PI error message will be delivered here. */
+
+    /* @var string If an error occurred, the error message will be set. */
     public $errorMessage;
 
     /**
-     * Prepare a good readable PI response and return it as an object
+     * Create a PIResponse object from the json response of the server.
+     *
      * @param $json
      * @param PrivacyIDEA $privacyIDEA
-     * @return PIResponse|null
+     * @return PIResponse|null returns null if the response of the server is empty or malformed
      */
     public static function fromJSON($json, PrivacyIDEA $privacyIDEA)
     {
@@ -37,25 +47,22 @@ class PIResponse
 
         if ($json == null || $json == "")
         {
-            $privacyIDEA->errorLog("PrivacyIDEA - PIResponse: No response from PI.");
+            $privacyIDEA->errorLog("Response from server is empty.");
             return null;
         }
 
-        // Build an PIResponse object and decode the response from JSON to PHP
         $ret = new PIResponse();
         $map = json_decode($json, true);
 
-        // If wrong response format - throw error
         if ($map == null)
         {
-            $privacyIDEA->errorLog("PrivacyIDEA - PIResponse: Response from PI was in wrong format. JSON expected.");
+            $privacyIDEA->errorLog("Response from the server is malformed:\n" . $json);
             return null;
         }
 
-        // Prepare raw JSON Response if needed
         $ret->raw = $json;
 
-        // Possibility to show an error message from PI server if no value
+        // If value is not present, an error occurred
         if (!isset($map['result']['value']))
         {
             $ret->errorCode = $map['result']['error']['code'];
@@ -63,7 +70,6 @@ class PIResponse
             return $ret;
         }
 
-        // Set information from PI response to property
         if (isset($map['detail']['messages']))
         {
             $ret->messages = implode(", ", array_unique($map['detail']['messages'])) ?: "";
@@ -79,7 +85,7 @@ class PIResponse
         $ret->status = $map['result']['status'] ?: false;
         $ret->value = $map['result']['value'] ?: false;
 
-        // Prepare attributes and detail
+        // Attributes and detail
         if (!empty($map['detail']['user']))
         {
             $attributes = $map['detail']['user'];
@@ -93,7 +99,7 @@ class PIResponse
             $ret->detailAndAttributes = array("detail" => $detail, "attributes" => $attributes);
         }
 
-        // Set all challenges to objects and set it all to one array
+        // Add any challenges to multiChallenge
         if (isset($map['detail']['multi_challenge']))
         {
             $mc = $map['detail']['multi_challenge'];
@@ -128,7 +134,7 @@ class PIResponse
     }
 
     /**
-     * Get array with all triggered token types.
+     * Get an array with all triggered token types.
      * @return array
      */
     public function triggeredTokenTypes()
@@ -142,7 +148,7 @@ class PIResponse
     }
 
     /**
-     * Get OTP message if OTP token(s) triggered.
+     * Get the message of any token that is not Push or WebAuthn. Those are OTP token requiring an input field.
      * @return string
      */
     public function otpMessage()
@@ -158,7 +164,7 @@ class PIResponse
     }
 
     /**
-     * Get push message if push token triggered.
+     * Get the Push token message if any were triggered.
      * @return string
      */
     public function pushMessage()
@@ -174,7 +180,7 @@ class PIResponse
     }
 
     /**
-     * Get WebAuthn message if that kind of token triggered.
+     * Get the WebAuthn token message if any were triggered.
      * @return string
      */
     public function webauthnMessage()
@@ -190,8 +196,8 @@ class PIResponse
     }
 
     /**
-     * Get WebAuthn Sign Request which comes in PIResponse if WebAuthn token is triggered.
-     * @return string
+     * Get the WebAuthnSignRequest for any triggered WebAuthn token. If none were triggered, this returns an empty string.
+     * @return string WebAuthnSignRequest or empty string
      */
     public function webAuthnSignRequest()
     {
@@ -209,11 +215,21 @@ class PIResponse
                 $arr[] = $challenge->attributes['webAuthnSignRequest']['allowCredentials'][0];
             }
         }
-        $webauthn->allowCredentials = $arr;
-
-        return json_encode($webauthn);
+        if (empty($webauthn))
+        {
+            return "";
+        }
+        else
+        {
+            $webauthn->allowCredentials = $arr;
+            return json_encode($webauthn);
+        }
     }
 
+    /**
+     * Get the U2FSignRequest for any triggered U2F token. If none were triggered, this returns an empty string.
+     * @return string U2FSignRequest or empty string
+     */
     public function u2fSignRequest()
     {
         $ret = "";

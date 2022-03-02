@@ -1,8 +1,6 @@
 <?php
 
-namespace PrivacyIdea\PHPClient;
+//namespace PrivacyIdea\PHPClient;
 
-class PIBadRequestException extends \Exception {}
-{
-
-}
+class PIBadRequestException extends Exception
+{}

@@ -1,6 +1,6 @@
 <?php
 
-namespace PrivacyIdea\PHPClient;
+//namespace PrivacyIdea\PHPClient;
 
 const AUTHENTICATORDATA = "authenticatordata";
 const CLIENTDATA = "clientdata";
@@ -18,28 +18,36 @@ const ASSERTIONCLIENTEXTENSIONS = "assertionclientextensions";
  */
 class PrivacyIDEA
 {
-    /* @var string Plugins name which must to be verified in privacyIDEA. */
+    /* @var string UserAgent to use in requests made to privacyIDEA. */
     public $userAgent = "";
-    /* @var string This is the URL to your privacyIDEA server. */
+
+    /* @var string URL of the privacyIDEA server. */
     public $serverURL = "";
+
     /* @var string Here is realm of users account. */
     public $realm = "";
-    /* @var bool You can decide if you want to verify your ssl certificate. */
+
+    /* @var bool Host verification can be disabled in SSL. */
     public $sslVerifyHost = true;
-    /* @var bool You can decide if you want to verify your ssl certificate. */
+
+    /* @var bool Peer verification can be disabled in SSL. */
     public $sslVerifyPeer = true;
-    /* @var string Username to your service account. You need it to get auth token which is needed by some PI API requests. */
+
+    /* @var string Account name for a service account to the privacyIDEA server. This is required to use the /validate/triggerchallenge endpoint. */
     public $serviceAccountName = "";
-    /* @var string Password to your service account. You need it to get auth token which is needed by some PI API requests. */
+
+    /* @var string Password for a service account to the privacyIDEA server. This is required to use the /validate/triggerchallenge endpoint. */
     public $serviceAccountPass = "";
-    /* @var string If needed you can add it too. */
+
+    /* @var string Realm for a service account to the privacyIDEA server. This is required to use the /validate/triggerchallenge endpoint. This is optional. */
     public $serviceAccountRealm = "";
-    /* @var object This object will deliver PI debug and error messages to your plugin so you can log it wherever you want. */
+
+    /* @var object Implementation of the PILog interface. */
     public $logger = null;
 
     /**
      * PrivacyIDEA constructor.
-     * @param $userAgent string the user agent that should set in the http header
+     * @param $userAgent string the user agent that should be used for the requests made
      * @param $serverURL string the url of the privacyIDEA server
      */
     public function __construct($userAgent, $serverURL)
@@ -49,36 +57,12 @@ class PrivacyIDEA
     }
 
     /**
-     * This function collect the debug messages and send it to PILog.php
-     * @param $message
-     */
-    function debugLog($message)
-    {
-        if ($this->logger != null)
-        {
-            $this->logger->piDebug($message);
-        }
-    }
-
-    /**
-     * This function collect the error messages and send it to PILog.php
-     * @param $message
-     */
-    function errorLog($message)
-    {
-        if ($this->logger != null)
-        {
-            $this->logger->piError($message);
-        }
-    }
-
-    /**
-     * Handle validateCheck using user's username, password and if challenge response - transaction_id.
+     * Try to authenticate the user with the /validate/check endpoint.
      *
-     * @param $username string Must be set
-     * @param $pass string Must be set
+     * @param $username string
+     * @param $pass string this can be the OTP, but also the PIN to trigger a token or PIN+OTP depending on the configuration of the server.
      * @param null $transactionID Optional transaction ID. Used to reference a challenge that was triggered beforehand.
-     * @return PIResponse|null This method returns an PIResponse object which contains all the useful information from the PI server. In case of error returns null.
+     * @return PIResponse|null null if response was empty or malformed, or parameter missing
      * @throws PIBadRequestException
      */
     public function validateCheck($username, $pass, $transactionID = null)
@@ -86,17 +70,14 @@ class PrivacyIDEA
         assert('string' === gettype($username));
         assert('string' === gettype($pass));
 
-        // Log entry of the validateCheck()
-        $this->debugLog("validateCheck() with user=" . $username . ", pass=" . $pass . " and if is set transactionID " . $transactionID);
-
-        //Check if parameters are set
+        // Check if parameters are set
         if (!empty($username) || !empty($pass))
         {
             $params["user"] = $username;
             $params["pass"] = $pass;
             if (!empty($transactionID))
             {
-                //Add transaction ID in case of challenge response
+                // Add transaction ID in case of challenge response
                 $params["transaction_id"] = $transactionID;
             }
             if ($this->realm)
@@ -104,20 +85,18 @@ class PrivacyIDEA
                 $params["realm"] = $this->realm;
             }
 
-            //Call send_request function to handle an API Request using $parameters and return it.
             $response = $this->sendRequest($params, array(''), 'POST', '/validate/check');
 
-            //Return the response from /validate/check as PIResponse object
             $ret = PIResponse::fromJSON($response, $this);
             if ($ret == null)
             {
-                $this->debugLog("privacyIDEA - Validate Check: no response from PI-server");
+                $this->debugLog("Server did not respond.");
             }
             return $ret;
-        } else
+        }
+        else
         {
-            //Handle debug message if $username is empty
-            $this->debugLog("privacyIDEA - Validate Check: params incomplete!");
+            $this->debugLog("Missing username or pass for /validate/check.");
         }
         return null;
     }
@@ -127,84 +106,69 @@ class PrivacyIDEA
      * This function requires a service account to be set.
      *
      * @param string $username
-     * @return PIResponse|null This method returns an PIResponse object which contains all the useful information from the PI server.
+     * @return PIResponse|null null if response was empty or malformed, or parameter missing
      * @throws PIBadRequestException
      */
     public function triggerChallenge($username)
     {
         assert('string' === gettype($username));
 
-        // Log entry of the pollTransaction()
-        $this->debugLog("triggerChallenge() with username=" . $username);
-
         if ($username)
         {
             $authToken = $this->getAuthToken();
-            // If error occurred in getAuthToken() - return this error in PIResponse object
             $header = array("authorization:" . $authToken);
 
-            $parameter = array("user" => $username);
+            $params = array("user" => $username);
 
-            //Call /validate/triggerchallenge with username as parameter and return it.
-            $response = $this->sendRequest($parameter, $header, 'POST', '/validate/triggerchallenge');
-
-            //Return the response from /validate/triggerchallenge as PIResponse object
-            $ret = PIResponse::fromJSON($response, $this);
-
-            if ($ret == null)
+            if ($this->realm)
             {
-                $this->debugLog("privacyIDEA - Trigger Challenge: no response from PI-server");
+                $params["realm"] = $this->realm;
             }
-            return $ret;
 
-        } else
+            $response = $this->sendRequest($params, $header, 'POST', '/validate/triggerchallenge');
+
+            return PIResponse::fromJSON($response, $this);
+        }
+        else
         {
-            //Handle debug message if empty $username
-            $this->debugLog("privacyIDEA - Trigger Challenge: no username");
+            $this->debugLog("Username missing!");
         }
         return null;
     }
 
     /**
-     * Call /validate/polltransaction using transaction_id
+     * Poll for the status of a transaction (challenge).
      *
-     * @param $transactionID string An unique ID which is needed by some API requests.
-     * @return bool Returns true if PUSH is accepted, false otherwise.
+     * @param $transactionID string transactionId of the push challenge that was triggered before
+     * @return bool true if the Push request has been accepted, false otherwise.
      * @throws PIBadRequestException
      */
     public function pollTransaction($transactionID)
     {
         assert('string' === gettype($transactionID));
 
-        // Log entry of the pollTransaction()
-        $this->debugLog("pollTransaction() with transaction ID=" . $transactionID);
-
         if (!empty($transactionID))
         {
             $params = array("transaction_id" => $transactionID);
-            // Call /validate/polltransaction using transactionID and decode it from JSON
             $responseJSON = $this->sendRequest($params, array(''), 'GET', '/validate/polltransaction');
             $response = json_decode($responseJSON, true);
-            //Return the response from /validate/polltransaction
             return $response['result']['value'];
-
-        } else
+        }
+        else
         {
-            //Handle debug message if $transactionID is empty
-            $this->debugLog("privacyIDEA - Poll Transaction: No transaction ID");
+            $this->debugLog("TransactionID missing!");
         }
         return false;
     }
 
     /**
-     * Check if user already has token
-     * Enroll a new token
+     * Check if user already has token and if not, enroll a new token
      *
      * @param string $username
      * @param string $genkey
      * @param string $type
      * @param string $description
-     * @return mixed
+     * @return mixed Object representing the response of the server or null if parameters are missing
      * @throws PIBadRequestException
      */
     public function enrollToken($username, $genkey, $type, $description = "") // No return type because mixed not allowed yet
@@ -217,14 +181,11 @@ class PrivacyIDEA
             assert('string' === gettype($description));
         }
 
-        // Log entry of the enrollToken()
-        $this->debugLog("privacyIDEA - enrollToken() with user=" . $username . ", genkey=" . $genkey . ", type=" . $type . ", description=" . $description);
-
         // Check if parameters contain the required keys
         if (empty($username) || empty($type))
         {
-            $this->debugLog("privacyIDEA - Enroll Token: Token enrollment not possible because params are not complete");
-            return array();
+            $this->debugLog("Token enrollment not possible because parameters are not complete");
+            return null;
         }
 
         $params["user"] = $username;
@@ -242,24 +203,24 @@ class PrivacyIDEA
 
         if (!empty($tokenInfo->result->value->tokens))
         {
-            $this->debugLog("privacyIDEA - Enroll Token: User already has a token. No need to enroll a new one.");
-            return array();
-
-        } else
+            $this->debugLog("enrollToken: User already has a token.");
+            return null;
+        }
+        else
         {
-            // Call /token/init endpoint and return the PI response
+            // Call /token/init endpoint and return the response
             return json_decode($this->sendRequest($params, $header, 'POST', '/token/init'));
         }
     }
 
     /**
-     * Sends a request to /validate/check with the data required to authenticate a WebAuthn token.
+     * Sends a request to /validate/check with the data required to authenticate with a WebAuthn token.
      *
      * @param string $username
      * @param string $transactionID
      * @param string $webAuthnSignResponse
      * @param string $origin
-     * @return PIResponse|null
+     * @return PIResponse|null returns null if the response was empty or malformed
      * @throws PIBadRequestException
      */
     public function validateCheckWebAuthn($username, $transactionID, $webAuthnSignResponse, $origin)
@@ -269,13 +230,8 @@ class PrivacyIDEA
         assert('string' === gettype($webAuthnSignResponse));
         assert('string' === gettype($origin));
 
-        // Log entry of the validateCheckWebAuthn()
-        $this->debugLog("ValidateCheckWebAuthn with user=" . $username . ", transactionID=" . $transactionID . ", WebAuthnSignResponse=" . $webAuthnSignResponse . ", origin=" . $origin);
-
-        // Check if parameters are set
         if (!empty($username) || !empty($transactionID))
         {
-
             // Compose standard validate/check params
             $params["user"] = $username;
             $params["pass"] = "";
@@ -307,25 +263,18 @@ class PrivacyIDEA
 
             $response = $this->sendRequest($params, $header, 'POST', '/validate/check');
 
-            //Return the response from /validate/check as PIResponse object
-            $ret = PIResponse::fromJSON($response, $this);
-
-            if ($ret == null)
-            {
-                $this->debugLog("privacyIDEA - WebAuthn: no response from PI-server");
-            }
-            return $ret;
-
-        } else
+            return PIResponse::fromJSON($response, $this);
+        }
+        else
         {
-            //Handle debug message if $username is empty
-            $this->debugLog("privacyIDEA - WebAuthn: params incomplete!");
+            // Handle debug message if $username is empty
+            $this->debugLog("validateCheckWebAuthn: parameters are incomplete!");
         }
         return null;
     }
 
     /**
-     * Sends a request to /validate/check with the data required to authenticate a U2F token.
+     * Sends a request to /validate/check with the data required to authenticate with an U2F token.
      *
      * @param string $username
      * @param string $transactionID
@@ -339,13 +288,9 @@ class PrivacyIDEA
         assert('string' === gettype($transactionID));
         assert('string' === gettype($u2fSignResponse));
 
-        // Log entry of validateCheckU2F
-        $this->debugLog("ValidateCheckU2F with user=" . $username . ", transactionID=" . $transactionID . ", u2fSignResponse=" . $u2fSignResponse);
-
-        // Check if parameters are set
+        // Check if required parameters are set
         if (!empty($username) || !empty($transactionID) || !empty($u2fSignResponse))
         {
-
             // Compose standard validate/check params
             $params["user"] = $username;
             $params["pass"] = "";
@@ -363,19 +308,11 @@ class PrivacyIDEA
 
             $response = $this->sendRequest($params, array(), 'POST', '/validate/check');
 
-            //Return the response from /validate/check as PIResponse object
-            $ret = PIResponse::fromJSON($response, $this);
-
-            if ($ret == null)
-            {
-                $this->debugLog("privacyIDEA - U2F: no response from PI-server");
-            }
-            return $ret;
-
-        } else
+            return PIResponse::fromJSON($response, $this);
+        }
+        else
         {
-            //Handle debug message if $username is empty
-            $this->debugLog("privacyIDEA - U2F: params incomplete!");
+            $this->debugLog("validateCheckU2F parameters are incomplete!");
         }
         return null;
     }
@@ -390,21 +327,19 @@ class PrivacyIDEA
     }
 
     /**
-     * Retrieves an auth token from the server using the service account. The auth token is required to make certain requests to privacyIDEA.
-     * If no service account is set or an error occurred, this function returns false.
+     * Retrieves an auth token from the server using the service account. An auth token is required for some requests to privacyIDEA.
      *
-     * @return string|bool|PIResponse the auth token or false.
-     * @throws PIBadRequestException
+     * @return string the auth token or empty string if the response did not contain a token or no service account is configured.
+     * @throws PIBadRequestException if an error occurs during the request
      */
     public function getAuthToken()
     {
         if (!$this->serviceAccountAvailable())
         {
-            $this->errorLog("Cannot retrieve auth token without service account");
-            return false;
+            $this->errorLog("Cannot retrieve auth token without service account!");
+            return "";
         }
 
-        // To get auth token from server use API Request: /auth with added service account and service pass
         $params = array(
             "username" => $this->serviceAccountName,
             "password" => $this->serviceAccountPass
@@ -415,29 +350,26 @@ class PrivacyIDEA
             $params["realm"] = $this->serviceAccountRealm;
         }
 
-        // Call /auth endpoint and decode the response from JSON to PHP
         $response = json_decode($this->sendRequest($params, array(''), 'POST', '/auth'), true);
 
         if (!empty($response['result']['value']))
         {
-            // Get auth token from response->result->value->token and return the token
-            return $response['result']['value']['token'];
+            return @$response['result']['value']['token'] ?: "";
         }
 
-        // If no response return false
-        $this->debugLog("privacyIDEA - getAuthToken: No response from PI-Server");
-        return false;
+        $this->debugLog("/auth response did not contain a auth token.");
+        return "";
     }
 
     /**
-     * Prepare send_request and make curl_init.
+     * Send a request to an endpoint with the specified parameters and headers.
      *
-     * @param $params array request parameters in an array
-     * @param $headers array headers fields in array
-     * @param $httpMethod string
+     * @param $params array request parameters
+     * @param $headers array headers fields
+     * @param $httpMethod string GET or POST
      * @param $endpoint string endpoint of the privacyIDEA API (e.g. /validate/check)
-     * @return string returns string with response from server or an empty string if error occurs
-     * @throws PIBadRequestException
+     * @return string returns a string with the response from server
+     * @throws PIBadRequestException if an error occurres
      */
     public function sendRequest(array $params, array $headers, $httpMethod, $endpoint)
     {
@@ -446,14 +378,11 @@ class PrivacyIDEA
         assert('string' === gettype($httpMethod));
         assert('string' === gettype($endpoint));
 
-        $this->debugLog("Sending   HEADER: " . http_build_query($headers, '', ', ') . ", with " . $httpMethod . " to " . $endpoint);
-        $this->debugLog("And       PARAMS: " . http_build_query($params, '', ', '));
+        $this->debugLog("Sending " . http_build_query($params, '', ', ') . " to " . $endpoint);
 
-        $curlInstance = curl_init();
-
-        // Compose an API Request using privacyIDEA's URL from config and endpoint created in function
         $completeUrl = $this->serverURL . $endpoint;
 
+        $curlInstance = curl_init();
         curl_setopt($curlInstance, CURLOPT_URL, $completeUrl);
         curl_setopt($curlInstance, CURLOPT_HEADER, true);
         if ($headers)
@@ -466,8 +395,8 @@ class PrivacyIDEA
         {
             curl_setopt($curlInstance, CURLOPT_POST, true);
             curl_setopt($curlInstance, CURLOPT_POSTFIELDS, $params);
-
-        } elseif ($httpMethod === "GET")
+        }
+        elseif ($httpMethod === "GET")
         {
             $paramsStr = '?';
             if (!empty($params))
@@ -480,12 +409,12 @@ class PrivacyIDEA
             curl_setopt($curlInstance, CURLOPT_URL, $completeUrl . $paramsStr);
         }
 
-        // Check if you should to verify privacyIDEA's SSL certificate in your config
-        // If true - do it, if false - don't verify
+        // Disable host and/or peer verification for SSL if configured.
         if ($this->sslVerifyHost === true)
         {
             curl_setopt($curlInstance, CURLOPT_SSL_VERIFYHOST, 2);
-        } else
+        }
+        else
         {
             curl_setopt($curlInstance, CURLOPT_SSL_VERIFYHOST, 0);
         }
@@ -493,35 +422,58 @@ class PrivacyIDEA
         if ($this->sslVerifyPeer === true)
         {
             curl_setopt($curlInstance, CURLOPT_SSL_VERIFYPEER, 2);
-        } else
+        }
+        else
         {
             curl_setopt($curlInstance, CURLOPT_SSL_VERIFYPEER, 0);
         }
 
-        //Store response in the variable
         $response = curl_exec($curlInstance);
 
         if (!$response)
         {
-            //Handle error if no response and return an empty string
+            // Handle error
             $curlErrno = curl_errno($curlInstance);
-            $this->errorLog("privacyIDEA-SDK: Bad request to PI server. " . curl_error($curlInstance) . " errno: " . $curlErrno);
+            $this->errorLog("Bad request: " . curl_error($curlInstance) . " errno: " . $curlErrno);
             throw new PIBadRequestException("Unable to reach the authentication server (" . $curlErrno . ")");
         }
 
         $headerSize = curl_getinfo($curlInstance, CURLINFO_HEADER_SIZE);
         $ret = substr($response, $headerSize);
+        curl_close($curlInstance);
 
         // Log the response
-        if ($endpoint != "/auth")
+        if ($endpoint != "/auth" && $this->logger != null)
         {
             $retJson = json_decode($ret, true);
             $this->debugLog($endpoint . " returned " . json_encode($retJson, JSON_PRETTY_PRINT));
         }
 
-        curl_close($curlInstance);
-
-        //Return decoded response from API Request
+        // Return decoded response
         return $ret;
+    }
+
+    /**
+     * This function relays messages to the PILogger implementation
+     * @param $message
+     */
+    function debugLog($message)
+    {
+        if ($this->logger != null)
+        {
+            $this->logger->piDebug("privacyIDEA-PHP-Client: " . $message);
+        }
+    }
+
+    /**
+     * This function relays messages to the PILogger implementation
+     * @param $message
+     */
+    function errorLog($message)
+    {
+        if ($this->logger != null)
+        {
+            $this->logger->piError("privacyIDEA-PHP-Client: " . $message);
+        }
     }
 }
