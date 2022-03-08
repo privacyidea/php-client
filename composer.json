@@ -22,7 +22,7 @@
   ],
   "require": {
     "php": ">=5.6",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "*",
     "internations/http-mock": ">=0.14.0",
     "curl/curl": "*",
     "ext-json": "*",
