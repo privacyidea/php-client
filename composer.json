@@ -28,6 +28,6 @@
   },
   "require-dev": {
     "phpunit/phpunit": "*",
-    "internations/http-mock": ">=0.14.0",
+    "internations/http-mock": ">=0.14.0"
   }
 }
