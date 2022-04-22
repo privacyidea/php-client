@@ -70,8 +70,7 @@ class PrivacyIDEA
         assert('string' === gettype($username));
         assert('string' === gettype($pass));
 
-        // Check if parameters are set
-        if (!empty($username) || !empty($pass))
+        if (!empty($username))
         {
             $params["user"] = $username;
             $params["pass"] = $pass;
@@ -96,7 +95,7 @@ class PrivacyIDEA
         }
         else
         {
-            $this->debugLog("Missing username or pass for /validate/check.");
+            $this->debugLog("Missing username for /validate/check.");
         }
         return null;
     }

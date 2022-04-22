@@ -26,6 +26,11 @@ class TestValidateCheck extends TestCase implements PILog
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://localhost:8082");
+
+        $this->pi->logger = $this;
+        $this->pi->sslVerifyHost = false;
+        $this->pi->sslVerifyPeer = false;
+        $this->pi->realm = "testRealm";
     }
 
     public function tearDown(): void
@@ -55,10 +60,6 @@ class TestValidateCheck extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $this->pi->logger = $this;
-        $this->pi->sslVerifyHost = false;
-        $this->pi->sslVerifyPeer = false;
-
         $response = $this->pi->validateCheck("testUser", "testPass");
 
         $this->assertEquals("matching 1 tokens", $response->message);
@@ -81,7 +82,7 @@ class TestValidateCheck extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheck("testUser", "testPass");
+        $response = $this->pi->validateCheck("testUser", "testPass", "123456677");
 
         $this->assertNull($response);
     }
@@ -89,9 +90,9 @@ class TestValidateCheck extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
-    public function testNoResponse()
+    public function testNoUsername()
     {
-        $response = $this->pi->validateCheck("testUser", "testPass");
+        $response = $this->pi->validateCheck("", "testPass");
 
         $this->assertNull($response);
     }
