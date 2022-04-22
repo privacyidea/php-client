@@ -229,7 +229,7 @@ class PrivacyIDEA
         assert('string' === gettype($webAuthnSignResponse));
         assert('string' === gettype($origin));
 
-        if (!empty($username) || !empty($transactionID))
+        if (!empty($username) && !empty($transactionID) && !empty($webAuthnSignResponse) && !empty($origin))
         {
             // Compose standard validate/check params
             $params["user"] = $username;
