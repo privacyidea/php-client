@@ -27,6 +27,7 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://localhost:8082");
+        $this->pi->realm = "testRealm";
     }
 
     public function tearDown(): void
@@ -127,6 +128,15 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
         $this->assertEquals("matching 1 tokens", $response->message);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
+    }
+
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testNoSignResponse()
+    {
+        $response = $this->pi->validateCheckWebAuthn("testUser", "12345678", "", "test.it");
+        $this->assertNull($response);
     }
 
     public function piDebug($message)

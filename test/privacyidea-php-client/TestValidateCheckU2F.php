@@ -27,6 +27,7 @@ class TestValidateCheckU2F extends TestCase implements PILog
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://localhost:8082");
+        $this->pi->realm = "testRealm";
     }
 
     public function tearDown(): void
@@ -106,6 +107,15 @@ class TestValidateCheckU2F extends TestCase implements PILog
         $this->assertEquals(UtilsForTests::responseBodySuccess(), $response->raw);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
+    }
+
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testNoSignResponse()
+    {
+        $response = $this->pi->validateCheckU2F("testUser", "12345678", "");
+        $this->assertNull($response);
     }
 
     public function piDebug($message)
