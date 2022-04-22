@@ -28,6 +28,7 @@ class TestValidateCheckU2F extends TestCase implements PILog
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://localhost:8082");
         $this->pi->realm = "testRealm";
+        $this->pi->logger = $this;
     }
 
     public function tearDown(): void

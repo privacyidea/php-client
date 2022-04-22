@@ -6,7 +6,7 @@ require_once('../../vendor/autoload.php');
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 
-class TestTriggerChallenge extends TestCase
+class TestTriggerChallenge extends TestCase implements PILog
 {
     private $pi;
 
@@ -25,7 +25,9 @@ class TestTriggerChallenge extends TestCase
     public function setUp(): void
     {
         $this->setUpHttpMock();
-        $this->pi = new PrivacyIDEA('testUserAgent', "http://127.0.0.1:8082");
+        $this->pi = new PrivacyIDEA('testUserAgent', "localhost:8082");
+        $this->pi->logger = $this;
+        $this->realm = "testRealm";
     }
 
     public function tearDown(): void
@@ -36,110 +38,99 @@ class TestTriggerChallenge extends TestCase
     /**
      * @throws PIBadRequestException
      */
-    public function test()
+    public function testTriggerChallengeSuccess()
     {
-        $respAuthToken = '{
-         "id": 1,
-         "jsonrpc": "2.0",
-         "result": {
-             "status": true,
-             "value": {
-                 "token": "eyJhbGciOiJIUz....jdpn9kIjuGRnGejmbFbM"
-             }
-         },
-         "version": "privacyIDEA unknown"
-        }';
+        $responseBody = "{\"detail\":{" . "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
+            "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
+            "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
+            "\"serial\":\"TOTP00021198\"," . "\"transaction_id\":\"16734787285577957577\"," .
+            "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," . "\"threadid\":140050885818112," .
+            "\"transaction_id\":\"16734787285577957577\"," .
+            "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
+            "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":false}," .
+            "\"time\":1649666174.5351279," . "\"version\":\"privacyIDEA3.6.3\"," .
+            "\"versionnumber\":\"3.6.3\"," .
+            "\"signature\":\"rsa_sha256_pss:4b0f0e12c2...89409a2e65c87d27b\"}";
 
-        $respTriggerChallenge = '{
-           "detail":{
-              "attributes":null,
-              "messages":[
-                 "Please confirm the authentication on your mobile device!"
-              ],
-              "multi_challenge":[
-                 {
-                    "attributes":null,
-                    "message":"please enter otp: ",
-                    "serial":"OATH00016327",
-                    "transaction_id":"08282050332563531714",
-                    "type":"hotp"
-                 },
-                  {
-                    "attributes":null,
-                    "message":"please verify push",
-                    "serial":"PIPU1092340ß1231",
-                    "transaction_id":"08282050332563531714",
-                    "type":"push"
-                 }
-              ],
-              "serial":"TOTP0002A944",
-              "transaction_id":"08282050332563531714",
-              "type":"totp"
-           },
-           "result":{
-              "status":true,
-              "value":1
-           },
-           "version":"privacyIDEA 3.5.2",
-           "versionnumber":"3.5.2",
-           "signature":"rsa_sha256_pss:12345"
-        }';
+        $authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicmVhbG0iOiIiLCJub25jZSI6IjVjOTc4NWM5OWU";
+
+        $this->http->mock
+            ->when()
+            ->methodIs('POST')
+            ->pathIs('/validate/triggerchallenge')
+            ->then()
+            ->body($responseBody)
+            ->end();
+        $this->http->setUp();
 
         $this->http->mock
             ->when()
             ->methodIs('POST')
             ->pathIs('/auth')
             ->then()
-            ->body($respAuthToken)
+            ->body($authToken)
             ->end();
         $this->http->setUp();
 
-        $this->http->mock
-            ->when()
-            ->methodIs('POST')
-            ->pathIs('/validate/triggerchallenge')
-            ->then()
-            ->body(null)
-            ->end();
-        $this->http->setUp();
+        $this->pi->serviceAccountName = "testServiceAccount";
+        $this->pi->serviceAccountPass = "testServicePass";
+        $this->pi->serviceAccountRealm = "testServiceRealm";
 
-        $response = $this->pi->triggerChallenge("testUser");
-        $this->assertNull($response, "Response is not NULL.");
+        $response = $this->pi->triggerchallenge("testUser");
 
-        $this->http->mock
-            ->when()
-            ->methodIs('POST')
-            ->pathIs('/validate/triggerchallenge')
-            ->then()
-            ->body($respTriggerChallenge)
-            ->end();
-        $this->http->setUp();
+        $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->message);
+        $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
+        $this->assertEquals("16734787285577957577", $response->transactionID);
+        $this->assertTrue($response->status);
+        $this->assertFalse($response->value);
+    }
 
-        $response = $this->pi->triggerChallenge("");
-        $this->assertNull($response, "Response not NULL even if the username not given.");
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testNoServiceAccount()
+    {
+        $response = $this->pi->triggerchallenge("testUser");
 
-        $response = $this->pi->triggerChallenge("testUser");
-        $this->assertNotNull($response, "Response is NULL.");
+        $this->assertNull($response);
+    }
 
-        $this->assertEquals("Please confirm the authentication on your mobile device!", $response->messages, "Message did not match.");
-        $this->assertEquals("08282050332563531714", $response->transaction_id, "Transaction id did not match.");
-        $this->assertEquals($respTriggerChallenge, $response->raw, "Cannot to get the raw response in JSON format!");
-        $this->assertTrue($response->status, "Status is not true as expected.");
-        $this->assertEquals("1", $response->value, "Value is not false as expected.");
-        $this->assertEmpty($response->detailAndAttributes, "detailAndAttributes is not empty as expected.");
-        $this->assertNull($response->error, "Error is not null as expected.");
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testNoUsername()
+    {
+        $response = $this->pi->triggerchallenge("");
 
-        $this->assertEquals("08282050332563531714", $response->multi_challenge[0]->transaction_id, "Transaction id did not match.");
-        $this->assertEquals("please enter otp: ", $response->multi_challenge[0]->message, "Message did not match.");
-        $this->assertEquals("OATH00016327", $response->multi_challenge[0]->serial, "Serial did not match.");
-        $this->assertEquals("hotp", $response->multi_challenge[0]->type, "Type did not match.");
-        $this->assertNull($response->multi_challenge[0]->attributes, "attributes did not match.");
+        $this->assertNull($response);
+    }
 
-        // Test PIResponse methods: triggeredTokenTypes, pushAvailability, pushMessage, otpMessage
-        $this->assertIsArray($response->triggeredTokenTypes());
-        $this->assertEquals(["hotp","push"], $response->triggeredTokenTypes());
-        $this->assertTrue($response->pushAvailability());
-        $this->assertEquals("please verify push", $response->pushMessage());
-        $this->assertEquals("please enter otp: ", $response->otpMessage());
+    public function testWrongServerURL()
+    {
+        $e = "";
+        $this->pi = new PrivacyIDEA("testUserAgent", "https://xasfdfasda.com");
+
+        try
+        {
+            $this->pi->triggerchallenge("testUser");
+        }
+        catch (PIBadRequestException $e)
+        {
+            echo $e;
+        }
+
+        $this->assertNotEmpty($e);
+        $this->assertIsObject($e);
+        $this->assertIsNotString($e);
+    }
+
+    public function piDebug($message)
+    {
+        echo $message . "\n";
+    }
+
+    public function piError($message)
+    {
+        echo "error: " . $message . "\n";
     }
 }
