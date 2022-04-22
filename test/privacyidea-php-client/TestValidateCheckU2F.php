@@ -2,10 +2,10 @@
 
 require_once('../../src/Client-Autoloader.php');
 require_once('../../vendor/autoload.php');
+require_once('UtilsForTests.php');
 
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
-use function PHPUnit\Framework\assertEquals;
 
 class TestValidateCheckU2F extends TestCase implements PILog
 {
@@ -87,13 +87,6 @@ class TestValidateCheckU2F extends TestCase implements PILog
      */
     public function testSuccess()
     {
-        $responseBody = "{\n" . "  \"detail\": {\n" . "    \"message\": \"matching 1 tokens\",\n" . "    \"otplen\": 6,\n" .
-        "    \"serial\": \"PISP0001C673\",\n" . "    \"threadid\": 140536383567616,\n" .
-        "    \"type\": \"totp\"\n" . "  },\n" . "  \"id\": 1,\n" . "  \"jsonrpc\": \"2.0\",\n" .
-        "  \"result\": {\n" . "    \"status\": true,\n" . "    \"value\": true\n" . "  },\n" .
-        "  \"time\": 1589276995.4397042,\n" . "  \"version\": \"privacyIDEA 3.2.1\",\n" .
-        "  \"versionnumber\": \"3.2.1\",\n" . "  \"signature\": \"rsa_sha256_pss:AAAAAAAAAAA\"\n" . "}";
-
         $u2fSignResponse = "{\"clientData\":\"eyJjaGFsbGVuZ2UiOiJpY2UBc3NlcnRpb24ifQ\"," . "\"errorCode\":0," .
             "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQkjlZqzZW1lC-jDdFd2pKDUsNnA\"," .
             "\"signatureData\":\"AQAAAxAwRQIgZwEObruoCRRo738F9up1tdV2M0H1MdP5pkO5Eg\"}";
@@ -103,13 +96,14 @@ class TestValidateCheckU2F extends TestCase implements PILog
             ->methodIs('POST')
             ->pathIs('/validate/check')
             ->then()
-            ->body($responseBody)
+            ->body(UtilsForTests::responseBodySuccess())
             ->end();
         $this->http->setUp();
 
         $response = $this->pi->validateCheckU2F("testUser", "12345678", $u2fSignResponse);
 
         $this->assertEquals("matching 1 tokens", $response->message);
+        $this->assertEquals(UtilsForTests::responseBodySuccess(), $response->raw);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
     }

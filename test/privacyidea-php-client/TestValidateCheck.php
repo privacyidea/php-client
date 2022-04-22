@@ -2,6 +2,7 @@
 
 require_once('../../src/Client-Autoloader.php');
 require_once('../../vendor/autoload.php');
+require_once('UtilsForTests.php');
 
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
@@ -43,27 +44,19 @@ class TestValidateCheck extends TestCase implements PILog
      */
     public function testOTPSuccess()
     {
-        $responseBody =
-            "{\n" . "  \"detail\": {\n" . "    \"message\": \"matching 1 tokens\",\n" . "    \"otplen\": 6,\n" .
-            "    \"serial\": \"PISP0001C673\",\n" . "    \"threadid\": 140536383567616,\n" .
-            "    \"type\": \"totp\"\n" . "  },\n" . "  \"id\": 1,\n" . "  \"jsonrpc\": \"2.0\",\n" .
-            "  \"result\": {\n" . "    \"status\": true,\n" . "    \"value\": true\n" . "  },\n" .
-            "  \"time\": 1589276995.4397042,\n" . "  \"version\": \"privacyIDEA 3.2.1\",\n" .
-            "  \"versionnumber\": \"3.2.1\",\n" . "  \"signature\": \"rsa_sha256_pss:AAAAAAAAAAA\"\n" . "}";
-
         $this->http->mock
             ->when()
             ->methodIs('POST')
             ->pathIs('/validate/check')
             ->then()
-            ->body($responseBody)
+            ->body(UtilsForTests::responseBodySuccess())
             ->end();
         $this->http->setUp();
 
         $response = $this->pi->validateCheck("testUser", "testPass");
 
         $this->assertEquals("matching 1 tokens", $response->message);
-        $this->assertEquals($responseBody, $response->raw);
+        $this->assertEquals(UtilsForTests::responseBodySuccess(), $response->raw);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
     }
