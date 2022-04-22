@@ -288,7 +288,7 @@ class PrivacyIDEA
         assert('string' === gettype($u2fSignResponse));
 
         // Check if required parameters are set
-        if (!empty($username) || !empty($transactionID) || !empty($u2fSignResponse))
+        if (!empty($username) && !empty($transactionID) && !empty($u2fSignResponse))
         {
             // Compose standard validate/check params
             $params["user"] = $username;
