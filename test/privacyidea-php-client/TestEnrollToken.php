@@ -6,33 +6,36 @@ require_once('../../vendor/autoload.php');
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 
-class PrivacyIDEATest extends TestCase
+class TestEnrollToken extends TestCase
 {
     private $pi;
 
     use HttpMockTrait;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::setUpHttpMockBeforeClass('8082', 'localhost');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::tearDownHttpMockAfterClass();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://127.0.0.1:8082");
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->tearDownHttpMock();
     }
 
+    /**
+     * @throws PIBadRequestException
+     */
     public function testEnrollToken()
     {
         // Test case if user already have a token
@@ -139,11 +142,11 @@ class PrivacyIDEATest extends TestCase
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->enrollToken([
-            "user" => "testUser",
-            "genkey" => "1",
-            "type" => "totp",
-            "description" => "Enrolled for Test"]);
+        $response = $this->pi->enrollToken(
+            "testUser",
+            "1",
+            "totp",
+            "Enrolled for Test");
         $this->assertNotNull($response, "Response is NULL.");
         $this->assertEmpty($response);
 

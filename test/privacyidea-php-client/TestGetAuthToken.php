@@ -6,34 +6,37 @@ require_once('../../vendor/autoload.php');
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 
-class PrivacyIDEATest extends TestCase
+class TestGetAuthToken extends TestCase
 {
     private $pi;
 
     use HttpMockTrait;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::setUpHttpMockBeforeClass('8082', 'localhost');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::tearDownHttpMockAfterClass();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://127.0.0.1:8082");
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->tearDownHttpMock();
     }
 
-    public function testGetAuthToken()
+    /**
+     * @throws PIBadRequestException
+     */
+    public function test()
     {
         $respAuthToken = '{
          "id": 1,
@@ -57,7 +60,7 @@ class PrivacyIDEATest extends TestCase
         $this->http->setUp();
 
         $response = $this->pi->getAuthToken();
-        $this->assertFalse($response, "Response is not false.");
+        $this->assertEmpty($response, "Response is not false.");
 
         $this->pi->serviceAccountPass = "testPass";
         $this->pi->serviceAccountName = "testAdmin";
