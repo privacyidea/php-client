@@ -27,7 +27,7 @@ class TestTriggerChallenge extends TestCase implements PILog
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "localhost:8082");
         $this->pi->logger = $this;
-        $this->realm = "testRealm";
+        $this->pi->realm = "testRealm";
     }
 
     public function tearDown(): void
