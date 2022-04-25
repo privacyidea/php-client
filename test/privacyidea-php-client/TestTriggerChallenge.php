@@ -83,6 +83,11 @@ class TestTriggerChallenge extends TestCase implements PILog
         $this->assertEquals("16734787285577957577", $response->transactionID);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
+        $this->assertEquals("totp", $response->triggeredTokenTypes()[0]);
+        $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->otpMessage());
+        $this->assertEquals("", $response->webauthnMessage());
+        $this->assertEquals("", $response->u2fMessage());
+        $this->assertEquals("", $response->pushMessage());
     }
 
     /**
