@@ -59,6 +59,7 @@ class TestValidateCheck extends TestCase implements PILog
         $this->assertEquals(UtilsForTests::responseBodySuccess(), $response->raw);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
+        $this->assertEquals("", $response->otpMessage());
     }
 
     /**
