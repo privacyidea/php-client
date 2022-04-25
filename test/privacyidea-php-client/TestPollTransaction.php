@@ -6,7 +6,7 @@ require_once('../../vendor/autoload.php');
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 
-class TestPollTransaction extends TestCase
+class TestPollTransaction extends TestCase implements PILog
 {
     private $pi;
 
@@ -25,7 +25,9 @@ class TestPollTransaction extends TestCase
     public function setUp(): void
     {
         $this->setUpHttpMock();
-        $this->pi = new PrivacyIDEA('testUserAgent', "http://127.0.0.1:8082");
+        $this->pi = new PrivacyIDEA('testUserAgent', "localhost:8082");
+        $this->pi->realm = "testRealm";
+        $this->pi->logger = $this;
     }
 
     public function tearDown(): void
@@ -33,7 +35,10 @@ class TestPollTransaction extends TestCase
         $this->tearDownHttpMock();
     }
 
-    public function testPollTransaction()
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testSuccess()
     {
         $respPolling = '{
                 "id": 1,
@@ -56,12 +61,28 @@ class TestPollTransaction extends TestCase
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->pollTransaction("");
-        $this->assertNotNull($response, "Response is not NULL without transaction_id given.");
-
         $response = $this->pi->pollTransaction("1234567890");
-        $this->assertNotNull($response, "Response is NULL.");
 
-        $this->assertTrue($response, "Value is not true as expected.");
+        $this->assertNotNull($response);
+        $this->assertTrue($response);
+    }
+
+    /**
+     * @throws PIBadRequestException
+     */
+    public function testNoTransactionID()
+    {
+        $response = $this->pi->pollTransaction("");
+        $this->assertFalse($response);
+    }
+
+    public function piDebug($message)
+    {
+        echo $message . "\n";
+    }
+
+    public function piError($message)
+    {
+        echo "error: " . $message . "\n";
     }
 }
