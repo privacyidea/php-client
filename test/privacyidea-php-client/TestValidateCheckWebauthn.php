@@ -115,6 +115,8 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
         $webauthnSignResponse = "{" . "\"credentialid\":\"X9FrwMfmzj...saw21\"," .
             "\"authenticatordata\":\"xGzvgq0bVGR3WR0A...ZJdA7cBAAAACA\"," .
             "\"clientdata\":\"eyJjaGFsbG...dfhs\"," .
+            "\"userhandle\":\"eyJjaGFsadffhs\"," .
+            "\"assertionclientextensions\":\"eyJjaGFasdfasdffhs\"," .
             "\"signaturedata\":\"MEUCIQDNrG...43hc\"}";
 
         $this->http->mock
@@ -133,6 +135,9 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
         $this->assertEquals("matching 1 tokens", $response->message);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
+
+        $signRequest = $response->webAuthnSignRequest();
+        $this->assertEmpty($signRequest);
     }
 
     /**
