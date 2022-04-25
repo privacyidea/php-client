@@ -78,7 +78,7 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
             "    \"transaction_ids\": [\n" . "      \"16786665691788289392\"\n" . "    ],\n" .
             "    \"type\": \"webauthn\"\n" . "  },\n" . "  \"id\": 1,\n" . "  \"jsonrpc\": \"2.0\",\n" .
             "  \"result\": {\n" . "    \"authentication\": \"CHALLENGE\",\n" . "    \"status\": true,\n" .
-            "    \"value\": false\n" . "  },\n" . "  \"time\": 1611916339.8448942\n" . "}\n";
+            "    \"value\": false\n" . "  },\n" . "  \"time\": 1611916339.8448942\n" . "}";
 
         $this->http->mock
             ->when()
@@ -101,6 +101,10 @@ class TestValidateCheckWebauthn extends TestCase implements PILog
         $this->assertArrayHasKey("img", $response->multiChallenge[0]->attributes);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
+        $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->webauthnMessage());
+        $temp = str_replace(" ", "", $webauthnrequest);
+        $trimmedSignRequest = str_replace("\n", "", $temp);
+        $this->assertEquals($trimmedSignRequest, $response->webauthnSignRequest());
     }
 
     /**
