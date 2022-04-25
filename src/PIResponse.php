@@ -142,7 +142,7 @@ class PIResponse
         $ret = array();
         foreach ($this->multiChallenge as $challenge)
         {
-            array_push($ret, $challenge->type);
+            $ret[] = $challenge->type;
         }
         return array_unique($ret);
     }
@@ -242,5 +242,21 @@ class PIResponse
             }
         }
         return $ret;
+    }
+
+    /**
+     * Get the WebAuthn token message if any were triggered.
+     * @return string
+     */
+    public function u2fMessage()
+    {
+        foreach ($this->multiChallenge as $challenge)
+        {
+            if ($challenge->type === "u2f")
+            {
+                return $challenge->message;
+            }
+        }
+        return "";
     }
 }
