@@ -2,6 +2,7 @@
 
 require_once('../../src/Client-Autoloader.php');
 require_once('../../vendor/autoload.php');
+require_once('UtilsForTests.php');
 
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
@@ -54,6 +55,8 @@ class TestTriggerChallenge extends TestCase implements PILog
 
         $authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicmVhbG0iOiIiLCJub25jZSI6IjVjOTc4NWM5OWU";
 
+        $responseBodyAuth = UtilsForTests::authToken($authToken);
+
         $this->http->mock
             ->when()
             ->methodIs('POST')
@@ -68,7 +71,7 @@ class TestTriggerChallenge extends TestCase implements PILog
             ->methodIs('POST')
             ->pathIs('/auth')
             ->then()
-            ->body($authToken)
+            ->body($responseBodyAuth)
             ->end();
         $this->http->setUp();
 

@@ -2,6 +2,7 @@
 
 require_once('../../src/Client-Autoloader.php');
 require_once('../../vendor/autoload.php');
+require_once("UtilsForTests.php");
 
 use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
@@ -44,7 +45,7 @@ class TestEnrollToken extends TestCase implements PILog
 
         $img = "data:image/png;base64,iVBdgfgsdfgRK5CYII=";
 
-        $responseBodyAuth = $this->authToken($authToken);
+        $responseBodyAuth = UtilsForTests::authToken($authToken);
 
         $responseBodyTokenInit = "{\n" . "    \"detail\": {\n" . "        \"googleurl\": {\n" .
             "            \"description\": \"URL for google Authenticator\",\n" .
@@ -140,7 +141,7 @@ class TestEnrollToken extends TestCase implements PILog
     {
         $authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NoBVmAurqcaaMmwM-AsD1S6chGIM";
 
-        $responseBodyAuth = $this->authToken($authToken);
+        $responseBodyAuth = UtilsForTests::authToken($authToken);
 
         $responseBodyGetToken = "{\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":{" .
             "\"count\":1," . "\"current\":1," . "\"tokens\":[{" . "\"active\":true," . "\"count\":2," .
@@ -185,32 +186,6 @@ class TestEnrollToken extends TestCase implements PILog
             "Enrolled for test");
 
         $this->assertNull($response);
-    }
-
-    /**
-     * @param string $authToken
-     * @return string
-     */
-    public function authToken($authToken)
-    {
-        return "{\n" . "    \"id\": 1,\n" . "    \"jsonrpc\": \"2.0\",\n" .
-            "    \"result\": {\n" . "        \"status\": true,\n" .
-            "        \"value\": {\n" . "            \"log_level\": 20,\n" .
-            "            \"menus\": [\n" . "                \"components\",\n" .
-            "                \"machines\"\n" . "            ],\n" .
-            "            \"realm\": \"\",\n" . "            \"rights\": [\n" .
-            "                \"policydelete\",\n" .
-            "                \"resync\"\n" . "            ],\n" .
-            "            \"role\": \"admin\",\n" . "            \"token\": \"" .
-            $authToken . "\",\n" . "            \"username\": \"admin\",\n" .
-            "            \"logout_time\": 120,\n" .
-            "            \"default_tokentype\": \"hotp\",\n" .
-            "            \"user_details\": false,\n" .
-            "            \"subscription_status\": 0\n" . "        }\n" .
-            "    },\n" . "    \"time\": 1589446794.8502703,\n" .
-            "    \"version\": \"privacyIDEA 3.2.1\",\n" .
-            "    \"versionnumber\": \"3.2.1\",\n" .
-            "    \"signature\": \"rsa_sha256_pss:\"\n" . "}";
     }
 
     public function piDebug($message)
