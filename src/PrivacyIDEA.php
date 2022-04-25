@@ -198,7 +198,7 @@ class PrivacyIDEA
         $header = array("authorization:" . $authToken);
 
         // Check if user has token
-        $tokenInfo = json_decode($this->sendRequest(array("user" => $params['user']), $header, 'GET', '/token/'));
+        $tokenInfo = json_decode($this->sendRequest(array("user" => $username), $header, 'GET', '/token'));
 
         if (!empty($tokenInfo->result->value->tokens))
         {
