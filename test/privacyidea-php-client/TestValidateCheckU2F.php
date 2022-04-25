@@ -41,6 +41,11 @@ class TestValidateCheckU2F extends TestCase implements PILog
      */
     public function testTriggerU2F()
     {
+        $u2frequest =  "{\"appId\":\"https:\/\/ttype.u2f\"," .
+            "\"challenge\":\"TZKiB0VFFMFsnlz00lF5iCqtQduDJf56AeJAY_BT4NU\"," .
+            "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQJYu4G5qB9l7ScjRRxA-M35cTH-uHWyMEpxs4WBzbkjlZqzZW1lC-jDdFd2pKDUsNnA\"," .
+            "\"version\":\"U2F_V2\"}";
+
         $responseBody = "{" . "\"detail\":{" . "\"attributes\":{" . "\"hideResponseInput\":true," .
         "\"img\":\"static/img/FIDO-U2F-Security-Key-444x444.png\"," . "\"u2fSignRequest\":{" .
         "\"appId\":\"http//ttype.u2f\"," . "\"challenge\":\"TZKiB0VFFMF...tQduDJf56AeJAY_BT4NU\"," .
@@ -49,11 +54,8 @@ class TestValidateCheckU2F extends TestCase implements PILog
         "\"message\":\"Please confirm with your U2F token (Yubico U2F EE Serial 61730834)\"," .
         "\"messages\":[\"Please confirm with your U2F token (Yubico U2F EE Serial 61730834)\"]," .
         "\"multi_challenge\":[{" . "\"attributes\":{" . "\"hideResponseInput\":true," .
-        "\"img\":\"static/img/FIDO-U2F-Security-Key-444x444.png\"," . "\"u2fSignRequest\":{" .
-        "\"appId\":\"https://ttype.u2f\"," .
-        "\"challenge\":\"TZKiB0VFFMFsnlz00lF5iCqtQduDJf56AeJAY_BT4NU\"," .
-        "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQJYu4G5qB9l7ScjRRxA-M35cTH-uHWyMEpxs4WBzbkjlZqzZW1lC-jDdFd2pKDUsNnA\"," .
-        "\"version\":\"U2F_V2\"}}," .
+        "\"img\":\"static/img/FIDO-U2F-Security-Key-444x444.png\"," . "\"u2fSignRequest\":" .
+        $u2frequest . "}," .
         "\"message\":\"Please confirm with your U2F token (Yubico U2F EE Serial 61730834)\"," .
         "\"serial\":\"U2F00014651\"," . "\"transaction_id\":\"12399202888279169736\"," .
         "\"type\":\"u2f\"}]," . "\"serial\":\"U2F00014651\"," . "\"threadid\":140050978137856," .
@@ -82,6 +84,10 @@ class TestValidateCheckU2F extends TestCase implements PILog
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals($responseBody, $response->raw);
+        $temp = str_replace(" ", "", $u2frequest);
+        $trimmedSignRequest = str_replace("\n", "", $temp);
+        $this->assertEquals($trimmedSignRequest, $response->u2fSignRequest());
+        $this->assertEquals("Please confirm with your U2F token (Yubico U2F EE Serial 61730834)", $response->u2fMessage());
     }
 
     /**
