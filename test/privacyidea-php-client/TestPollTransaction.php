@@ -38,6 +38,55 @@ class TestPollTransaction extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
+    public function testTriggerPUSH()
+    {
+        $responseBody = "{\n" . "  \"detail\": {\n" . "    \"attributes\": null,\n" .
+            "    \"message\": \"Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!\",\n" .
+            "    \"messages\": [\n" . "      \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
+            "      \"Please confirm the authentication on your mobile device!\"\n" . "    ],\n" .
+            "    \"multi_challenge\": [\n" . "      {\n" . "        \"attributes\": null,\n" .
+            "        \"message\": \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
+            "        \"serial\": \"OATH00020121\",\n" .
+            "        \"transaction_id\": \"02659936574063359702\",\n" . "        \"type\": \"hotp\"\n" .
+            "      },\n" . "      {\n" . "        \"attributes\": null,\n" .
+            "        \"message\": \"Please confirm the authentication on your mobile device!\",\n" .
+            "        \"serial\": \"PIPU0001F75E\",\n" .
+            "        \"transaction_id\": \"02659936574063359702\",\n" . "        \"type\": \"push\"\n" .
+            "      }\n" . "    ],\n" . "    \"serial\": \"PIPU0001F75E\",\n" .
+            "    \"threadid\": 140040525666048,\n" . "    \"transaction_id\": \"02659936574063359702\",\n" .
+            "    \"transaction_ids\": [\n" . "      \"02659936574063359702\",\n" .
+            "      \"02659936574063359702\"\n" . "    ],\n" . "    \"type\": \"push\"\n" . "  },\n" .
+            "  \"id\": 1,\n" . "  \"jsonrpc\": \"2.0\",\n" . "  \"result\": {\n" .
+            "    \"status\": true,\n" . "    \"value\": false\n" . "  },\n" .
+            "  \"time\": 1589360175.594304,\n" . "  \"version\": \"privacyIDEA 3.2.1\",\n" .
+            "  \"versionnumber\": \"3.2.1\",\n" . "  \"signature\": \"rsa_sha256_pss:AAAAAAAAAA\"\n" . "}";
+
+        $this->http->mock
+            ->when()
+            ->methodIs('POST')
+            ->pathIs('/validate/check')
+            ->then()
+            ->body($responseBody)
+            ->end();
+        $this->http->setUp();
+
+        $response = $this->pi->validateCheck("testUser", "testPass");
+
+        $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->message);
+        $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->messages);
+        $this->assertEquals("02659936574063359702", $response->transactionID);
+        $this->assertIsArray($response->multiChallenge);
+        $this->assertTrue($response->status);
+        $this->assertFalse($response->value);
+        $this->assertEquals($responseBody, $response->raw);
+        $this->assertEquals("Please confirm the authentication on your mobile device!", $response->pushMessage());
+        $this->assertEquals("hotp", $response->triggeredTokenTypes()[0]);
+        $this->assertEquals("push", $response->triggeredTokenTypes()[1]);
+    }
+
+    /**
+     * @throws PIBadRequestException
+     */
     public function testSuccess()
     {
         $respPolling = '{
