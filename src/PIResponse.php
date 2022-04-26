@@ -25,6 +25,9 @@ class PIResponse
     /* @var bool Value is true if the authentication was successful. */
     public $value = false;
 
+    /* @var string Authentication Status */
+    public $authenticationStatus = "";
+
     /* @var array Additional attributes of the user that can be sent by the server. */
     public $detailAndAttributes = array();
 
@@ -81,6 +84,26 @@ class PIResponse
         if (isset($map['detail']['transaction_id']))
         {
             $ret->transactionID = $map['detail']['transaction_id'];
+        }
+
+        // Check that the authentication status is one of the allowed ones
+        $r = $map['result']['authentication'] ?: null;
+        if ($r === AuthenticationStatus::CHALLENGE)
+        {
+            $ret->authenticationStatus = AuthenticationStatus::CHALLENGE;
+        }
+        elseif ($r === AuthenticationStatus::ACCEPT)
+        {
+            $ret->authenticationStatus = AuthenticationStatus::ACCEPT;
+        }
+        elseif ($r === AuthenticationStatus::REJECT)
+        {
+            $ret->authenticationStatus = AuthenticationStatus::REJECT;
+        }
+        else
+        {
+            $privacyIDEA->debugLog("Unknown authentication status");
+            $ret->authenticationStatus = AuthenticationStatus::NONE;
         }
         $ret->status = $map['result']['status'] ?: false;
         $ret->value = $map['result']['value'] ?: false;
