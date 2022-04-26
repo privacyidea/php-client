@@ -86,6 +86,7 @@ class PIResponse
             $ret->transactionID = $map['detail']['transaction_id'];
         }
 
+        // Prove that the autheitication status is one of the allowed ones
         $r = $map['result']['authentication'] ?: null;
         if ($r === AuthenticationStatus::CHALLENGE)
         {
@@ -98,6 +99,11 @@ class PIResponse
         elseif ($r === AuthenticationStatus::REJECT)
         {
             $ret->authenticationStatus = AuthenticationStatus::REJECT;
+        }
+        else
+        {
+            $privacyIDEA->debugLog("Unknown authentication status");
+            $ret->authenticationStatus = AuthenticationStatus::NONE;
         }
         $ret->status = $map['result']['status'] ?: false;
         $ret->value = $map['result']['value'] ?: false;
