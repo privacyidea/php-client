@@ -86,7 +86,7 @@ class PIResponse
             $ret->transactionID = $map['detail']['transaction_id'];
         }
 
-        // Prove that the autheitication status is one of the allowed ones
+        // Check that the authentication status is one of the allowed ones
         $r = $map['result']['authentication'] ?: null;
         if ($r === AuthenticationStatus::CHALLENGE)
         {
