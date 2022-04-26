@@ -70,8 +70,7 @@ class PrivacyIDEA
         assert('string' === gettype($username));
         assert('string' === gettype($pass));
 
-        // Check if parameters are set
-        if (!empty($username) || !empty($pass))
+        if (!empty($username))
         {
             $params["user"] = $username;
             $params["pass"] = $pass;
@@ -96,7 +95,7 @@ class PrivacyIDEA
         }
         else
         {
-            $this->debugLog("Missing username or pass for /validate/check.");
+            $this->debugLog("Missing username for /validate/check.");
         }
         return null;
     }
@@ -199,7 +198,7 @@ class PrivacyIDEA
         $header = array("authorization:" . $authToken);
 
         // Check if user has token
-        $tokenInfo = json_decode($this->sendRequest(array("user" => $params['user']), $header, 'GET', '/token/'));
+        $tokenInfo = json_decode($this->sendRequest(array("user" => $username), $header, 'GET', '/token'));
 
         if (!empty($tokenInfo->result->value->tokens))
         {
@@ -230,7 +229,7 @@ class PrivacyIDEA
         assert('string' === gettype($webAuthnSignResponse));
         assert('string' === gettype($origin));
 
-        if (!empty($username) || !empty($transactionID))
+        if (!empty($username) && !empty($transactionID) && !empty($webAuthnSignResponse) && !empty($origin))
         {
             // Compose standard validate/check params
             $params["user"] = $username;
@@ -289,7 +288,7 @@ class PrivacyIDEA
         assert('string' === gettype($u2fSignResponse));
 
         // Check if required parameters are set
-        if (!empty($username) || !empty($transactionID) || !empty($u2fSignResponse))
+        if (!empty($username) && !empty($transactionID) && !empty($u2fSignResponse))
         {
             // Compose standard validate/check params
             $params["user"] = $username;
