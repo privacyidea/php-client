@@ -29,14 +29,20 @@ jobs:
 #        restore-keys: |
 #          ${{ runner.os }}-php-
 
+    - name: Check PHP installation
+      run: php -m
+      
+    - name: Check PHP packages
+      run: dpkg --get-selections | grep -i php
+
     - name: Install dependencies
-      uses: php-actions/composer@v6
+      run: composer install --prefer-dist --no-progress
+#      uses: php-actions/composer@v6
     
-#      run: composer install --prefer-dist --no-progress
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
-      uses: php-actions/phpunit@v3
-#      run: composer run-script test
+      run: composer run-script test
+#      uses: php-actions/phpunit@v3
