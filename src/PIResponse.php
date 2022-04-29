@@ -87,7 +87,11 @@ class PIResponse
         }
 
         // Check that the authentication status is one of the allowed ones
-        $r = $map['result']['authentication'] ?: null;
+        $r = null;
+        if (!empty($map['result']['authentication']))
+        {
+            $r = $map['result']['authentication'];
+        }
         if ($r === AuthenticationStatus::CHALLENGE)
         {
             $ret->authenticationStatus = AuthenticationStatus::CHALLENGE;
