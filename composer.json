@@ -31,6 +31,6 @@
     "internations/http-mock": "*"
   },
   "scripts": {
-    "test": "\"vendor/bin/phpunit\" --testsuite unit"
+    "test": "vendor/bin/phpunit --testsuite unit"
   }
 }
