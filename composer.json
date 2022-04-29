@@ -31,6 +31,6 @@
     "internations/http-mock": "*"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit test/privacyidea-php-client/TestValidateCheck.php"
+    "test": "vendor/bin/phpunit test/privacyidea-php-client/TestTriggerChallenge.php"
   }
 }
