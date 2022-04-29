@@ -1,6 +1,6 @@
 {
   "name": "privacyidea/privacyidea-php-client",
-  "description": "PHP Client to easy the use of the privacyIDEA API.",
+  "description": "PHP Client to ease the use of the privacyIDEA API.",
   "license": "AGPL-3.0-or-later",
   "minimum-stability": "stable",
   "authors": [
