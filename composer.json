@@ -29,5 +29,8 @@
   "require-dev": {
     "phpunit/phpunit": "*",
     "internations/http-mock": "*"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
   }
 }
