@@ -1,13 +1,14 @@
 <?php
 
-require_once(__DIR__ . '/../../src/Client-Autoloader.php');
-require_once(__DIR__ . '/../../vendor/autoload.php');
-require_once('UtilsForTests.php');
+require_once(__DIR__ . '/../src/Client-Autoloader.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
+require_once('utils/UtilsForTests.php');
 
-use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
+use PHPUnit\Framework\TestCase;
+use utils\UtilsForTests;
 
-class TestValidateCheckWebauthn extends TestCase implements PILog
+class ValidateCheckWebauthnTest extends TestCase implements PILog
 {
     private $pi;
 

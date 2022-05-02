@@ -1,12 +1,12 @@
 <?php
 
-require_once(__DIR__ . '/../../src/Client-Autoloader.php');
-require_once(__DIR__ . '/../../vendor/autoload.php');
+require_once(__DIR__ . '/../src/Client-Autoloader.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
 
-use PHPUnit\Framework\TestCase;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
+use PHPUnit\Framework\TestCase;
 
-class TestPollTransaction extends TestCase implements PILog
+class PollTransactionTest extends TestCase implements PILog
 {
     private $pi;
 

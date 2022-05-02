@@ -10,9 +10,9 @@
     }
   ],
   "autoload": {
-      "psr-4": {
-          "": "src"
-      }
+    "psr-4": {
+      "": "src"
+    }
   },
   "repositories": [
     {
@@ -29,8 +29,5 @@
   "require-dev": {
     "phpunit/phpunit": "*",
     "internations/http-mock": "*"
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit test/privacyidea-php-client/TestTriggerChallenge.php"
   }
 }
