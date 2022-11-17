@@ -55,7 +55,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
             "            \"userVerification\": \"preferred\"\n" . "          }\n";
 
         $responseBody =
-            "{\n" . "  \"detail\": {\n" . "    \"attributes\": {\n" . "      \"hideResponseInput\": true,\n" .
+            "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"webauthn\"," . "    \"attributes\": {\n" . "      \"hideResponseInput\": true,\n" .
             "      \"img\": \"static/img/FIDO-U2F-Security-Key-444x444.png\",\n" .
             "      \"webAuthnSignRequest\": {\n" . "        \"allowCredentials\": [\n" . "          {\n" .
             "            \"id\": \"83De8z_CNqogB6aCyKs6dWIqwpOpzVoNaJ74lgcpuYN7l-95QsD3z-qqPADqsFlPwBXCMqEPssq75kqHCMQHDA\",\n" .
@@ -95,6 +95,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->message);
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->messages);
         $this->assertEquals("16786665691788289392", $response->transactionID);
+        $this->assertEquals("webauthn", $response->preferredClientMode);
         $this->assertEquals("16786665691788289392", $response->multiChallenge[0]->transactionID);
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->multiChallenge[0]->message);
         $this->assertEquals("WAN00025CE7", $response->multiChallenge[0]->serial);

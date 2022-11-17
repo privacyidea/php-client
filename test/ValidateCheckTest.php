@@ -117,6 +117,7 @@ class ValidateCheckTest extends TestCase implements PILog
         $this->assertEquals("904", $response->errorCode);
         $this->assertEquals("ERR904: The user can not be found in any resolver in this realm!", $response->errorMessage);
         $this->assertFalse($response->status);
+        $this->assertEquals("", $response->otpMessage());
     }
 
     public function piDebug($message)
