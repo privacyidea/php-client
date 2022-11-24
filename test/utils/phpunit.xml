@@ -2,7 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
 	<coverage>
 		<include>
-			<directory suffix=".php">../../src</directory>
+			<directory suffix=".php">../../../src</directory>
 		</include>
 		<report>
 			<html outputDirectory="./_coverage" lowUpperBound="35" highLowerBound="70"/>
@@ -11,7 +11,7 @@
 	</coverage>
 	<testsuites>
 		<testsuite name="main">
-			<directory suffix="Test.php">.</directory>
+			<directory suffix="Test.php">../../</directory>
 		</testsuite>
 	</testsuites>
 	<logging/>
