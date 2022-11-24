@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Validate composer.json and composer.lock
+    - name: Validate composer.json
       run: composer validate
 
     - name: Check PHP installation
@@ -35,7 +35,7 @@ jobs:
       uses: php-actions/phpunit@master
       with:
         php_extensions: xdebug
-        bootstrap: ../vendor/autoload.php
+        bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
         testsuite: ../test/
