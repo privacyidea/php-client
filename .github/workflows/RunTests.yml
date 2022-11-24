@@ -35,11 +35,11 @@ jobs:
       uses: php-actions/phpunit@master
       with:
         php_extensions: xdebug
-        bootstrap: vendor/autoload.php
-        configuration: test/utils/phpunit.xml
+        bootstrap: ../vendor/autoload.php
+        configuration: ../test/utils/phpunit.xml
         args: --coverage-text
-        testsuite: test/
+        testsuite: ../test/
         test_suffix: Test.php
-        vendored_phpunit_path: vendor/bin/phpunit
+        vendored_phpunit_path: ../vendor/bin/phpunit
       env:
         XDEBUG_MODE: coverage
