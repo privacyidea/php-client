@@ -9,5 +9,10 @@
 			<text outputFile="php://stdout" showUncoveredFiles="true"/>
 		</report>
 	</coverage>
+	<testsuites>
+		<testsuite name="main">
+			<directory suffix="Test.php">../</directory>
+		</testsuite>
+	</testsuites>
 	<logging/>
 </phpunit>
