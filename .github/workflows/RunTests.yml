@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Validate composer.json and composer.lock
       run: composer validate
 
@@ -28,7 +29,10 @@ jobs:
     - name: Install dependencies
       uses: php-actions/composer@v6
         
-    - name: PHPUnit Tests
+    - name: Run PHPUnit Tests
       uses: php-actions/phpunit@master
       with:
         bootstrap: vendor/autoload.php
+        configuration: test/phpunit.xml
+        args: --coverage-text
+        php_version: "7.1"
