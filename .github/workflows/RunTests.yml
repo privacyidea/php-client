@@ -32,8 +32,11 @@ jobs:
     - name: Run PHPUnit Tests
       uses: php-actions/phpunit@master
       with:
+        php_extensions: xdebug
         bootstrap: vendor/autoload.php
         configuration: test/phpunit.xml
         args: --coverage-text
         testsuite: test/
         test_suffix: Test.php
+      env:
+        XDEBUG_MODE: coverage
