@@ -29,3 +29,8 @@ jobs:
     - name: Install dependencies
 
       uses: php-actions/composer@v6
+        
+    - name: PHPUnit (php-actions)
+  
+      uses: php-actions/phpunit@v3
+
