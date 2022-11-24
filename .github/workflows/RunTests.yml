@@ -34,6 +34,7 @@ jobs:
     - name: Run PHPUnit Tests
       uses: php-actions/phpunit@master
       with:
+        php_version: 7.3
         php_extensions: xdebug
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
