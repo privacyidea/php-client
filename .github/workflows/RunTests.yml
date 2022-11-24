@@ -40,6 +40,5 @@ jobs:
         args: --coverage-text
         testsuite: ../test/
         test_suffix: Test.php
-        vendored_phpunit_path: /vendor/bin/phpunit
       env:
         XDEBUG_MODE: coverage
