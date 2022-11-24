@@ -38,7 +38,7 @@ jobs:
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
-        testsuite: ../test/
+        testsuite: test/
         test_suffix: Test.php
       env:
         XDEBUG_MODE: coverage
