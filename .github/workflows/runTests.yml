@@ -36,7 +36,7 @@ jobs:
       run: |
         ls
         printf "next:"
-        cd /tests
+        cd /test
         ls
         printf "next:"
         cd /utils
@@ -46,7 +46,7 @@ jobs:
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       with:
-        report: tests/utils/coverage.html
-        report_type: html
+        report: test/utils/clover.xml
+        report_type: clover
       
       
