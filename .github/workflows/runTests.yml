@@ -31,15 +31,6 @@ jobs:
         args: --coverage-text
       env:
         XDEBUG_MODE: coverage
-        
-    - name: Check if coverage saved
-      run: |
-        ls
-        cd test
-        ls
-        cd utils
-        ls
-      
       
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
