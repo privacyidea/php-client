@@ -31,11 +31,22 @@ jobs:
         args: --coverage-text
       env:
         XDEBUG_MODE: coverage
+        
+    - name: Check if coverage saved
+      run: |
+        ls
+        printf "next:"
+        cd /tests
+        ls
+        printf "next:"
+        cd /utils
+        ls
+      
       
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       with:
-        report: tests/utils/clover.xml
-        report_type: clover
+        report: tests/utils/coverage.html
+        report_type: html
       
       
