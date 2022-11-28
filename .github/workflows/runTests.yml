@@ -34,7 +34,6 @@ jobs:
       
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
-      with:
-        report: tests/utils/clover.xml
+
       
       
