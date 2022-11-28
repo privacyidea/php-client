@@ -28,9 +28,13 @@ jobs:
         php_extensions: xdebug
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
+        testdox_xml: test/clover.xml
         args: --coverage-text
       env:
         XDEBUG_MODE: coverage
         
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
+      with:
+        report: test/clover.xml
+      
