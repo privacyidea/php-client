@@ -16,6 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      uses: php-actions/composer@v6
         
     - name: Run PHPUnit Tests
       uses: php-actions/phpunit@master
