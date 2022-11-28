@@ -28,8 +28,8 @@ jobs:
         php_extensions: xdebug
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
-        args: --coverage-text
-        env: XDEBUG_MODE=coverage
+      env:
+        XDEBUG_MODE: coverage
         
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
