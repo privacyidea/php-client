@@ -28,11 +28,4 @@ jobs:
         php_extensions: xdebug
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
-        testdox_xml: test/coverage.xml
         args: --coverage-text
-        
-    - name: Codecov upload
-      if: ${{ steps.unitTests.outcome == 'success' }}
-      uses: codecov/codecov-action@v3
-      with:
-        files: test/coverage.xml
