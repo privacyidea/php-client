@@ -35,5 +35,5 @@ jobs:
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       with:
-        report: tests/_coverage/coverage.xml
+        report: php-client/tests/_coverage/coverage.xml
       
