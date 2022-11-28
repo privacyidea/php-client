@@ -29,3 +29,8 @@ jobs:
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
+      env:
+        xdebug.mode: coverage
+        
+    - name: Coverage badge
+      uses: timkrase/phpunit.coverage-badge@master
