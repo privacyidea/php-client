@@ -32,6 +32,17 @@ jobs:
       env:
         XDEBUG_MODE: coverage
         
+    - name: Checking the directory
+      run: |
+        cd ..
+        ls
+        cd ..
+        ls
+        cd ..
+        ls
+        cd ..
+        ls
+        
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       
