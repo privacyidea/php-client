@@ -31,33 +31,10 @@ jobs:
         args: --coverage-text
       env:
         XDEBUG_MODE: coverage
-        
-    - name: Checking the directory
-      run: |
-        cd ..
-        ls
-        printf "next"
-        cd ..
-        ls
-        printf "next"
-        cd ..
-        ls        
-        printf "next"
-        cd ..
-        ls
-        printf "next"
-        cd ..
-        ls        
-        printf "next"
-        cd ..
-        ls        
-        printf "next"
-        cd ..
-        ls        
-        printf "next"
-        cd ..
-        ls
-        
+      
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
+      with:
+        report: tests/utils/clover.xml
+      
       
