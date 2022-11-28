@@ -36,10 +36,25 @@ jobs:
       run: |
         cd ..
         ls
+        print "next"
         cd ..
         ls
+        print "next"
+        cd ..
+        ls        
+        print "next"
         cd ..
         ls
+        print "next"
+        cd ..
+        ls        
+        print "next"
+        cd ..
+        ls        
+        print "next"
+        cd ..
+        ls        
+        print "next"
         cd ..
         ls
         
