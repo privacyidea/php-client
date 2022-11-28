@@ -35,11 +35,9 @@ jobs:
     - name: Check if coverage saved
       run: |
         ls
-        printf "next:"
-        cd /test
+        cd test
         ls
-        printf "next:"
-        cd /utils
+        cd utils
         ls
       
       
