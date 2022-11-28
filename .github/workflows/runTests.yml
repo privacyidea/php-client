@@ -32,10 +32,10 @@ jobs:
       env:
         XDEBUG_MODE: coverage
       
-    - name: Coverage badge
+    - name: Update coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       with:
-        report: test/utils/clover.xml
-        report_type: clover
+        report: test/utils/_coverage/coverage.html
+        report_type: html
       
       
