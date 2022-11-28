@@ -21,6 +21,7 @@ jobs:
       uses: php-actions/composer@v6
         
     - name: Run PHPUnit Tests
+      id: unitTests
       uses: php-actions/phpunit@master
       with:
         php_version: 7.3
@@ -28,5 +29,9 @@ jobs:
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
-      env:
-        XDEBUG_MODE: coverage
+        
+    - name: Codecov upload
+      if: ${{ steps.unitTests.outcome == 'success' }}
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
