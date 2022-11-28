@@ -32,6 +32,9 @@ jobs:
       env:
         XDEBUG_MODE: coverage
         
+    - run: cd /tests
+    - run: ls
+        
     - name: Coverage badge
       uses: timkrase/phpunit-coverage-badge@v1.2.0
       with:
