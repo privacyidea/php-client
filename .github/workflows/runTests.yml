@@ -17,6 +17,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Validate composer.json
+      run: composer validate
+      
+    - name: Check PHP installation
+      run: php -m
+      
+    - name: Check PHP packages
+      run: dpkg --get-selections | grep -i php
+    
     - name: Install dependencies
       uses: php-actions/composer@v6
       with:
@@ -31,6 +40,8 @@ jobs:
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
+        testsuite: test/
+        test_suffix: Test.php
       env:
         XDEBUG_MODE: coverage
       
