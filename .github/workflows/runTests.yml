@@ -19,6 +19,8 @@ jobs:
     
     - name: Install dependencies
       uses: php-actions/composer@v6
+      with:
+        dev: yes
         
     - name: Run PHPUnit Tests
       id: unitTests
@@ -37,5 +39,6 @@ jobs:
       with:
         report: test/utils/_coverage/clover.xml
         report_type: clover
+
       
       
