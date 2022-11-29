@@ -23,7 +23,6 @@ jobs:
         dev: yes
         
     - name: Run PHPUnit Tests
-      id: unitTests
       uses: php-actions/phpunit@master
       with:
         php_version: 7.3
@@ -31,8 +30,6 @@ jobs:
         bootstrap: vendor/autoload.php
         configuration: test/utils/phpunit.xml
         args: --coverage-text
-        testsuite: test/
-        test_suffix: Test.php
       env:
         XDEBUG_MODE: coverage
       
