@@ -40,7 +40,7 @@ class PollTransactionTest extends TestCase implements PILog
      */
     public function testTriggerPUSH()
     {
-        $responseBody = "{\n" . "  \"detail\": {\n" . "    \"attributes\": null,\n" .
+        $responseBody = "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"push\"," . "    \"attributes\": null,\n" .
             "    \"message\": \"Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!\",\n" .
             "    \"messages\": [\n" . "      \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
             "      \"Please confirm the authentication on your mobile device!\"\n" . "    ],\n" .
@@ -75,6 +75,7 @@ class PollTransactionTest extends TestCase implements PILog
         $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->message);
         $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->messages);
         $this->assertEquals("02659936574063359702", $response->transactionID);
+        $this->assertEquals("push", $response->preferredClientMode);
         $this->assertIsArray($response->multiChallenge);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);

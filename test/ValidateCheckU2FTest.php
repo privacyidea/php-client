@@ -47,7 +47,7 @@ class ValidateCheckU2FTest extends TestCase implements PILog
             "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQJYu4G5qB9l7ScjRRxA-M35cTH-uHWyMEpxs4WBzbkjlZqzZW1lC-jDdFd2pKDUsNnA\"," .
             "\"version\":\"U2F_V2\"}";
 
-        $responseBody = "{" . "\"detail\":{" . "\"attributes\":{" . "\"hideResponseInput\":true," .
+        $responseBody = "{" . "\"detail\":{" . "\"preferred_client_mode\":\"u2f\"," . "\"attributes\":{" . "\"hideResponseInput\":true," .
         "\"img\":\"static/img/FIDO-U2F-Security-Key-444x444.png\"," . "\"u2fSignRequest\":{" .
         "\"appId\":\"http//ttype.u2f\"," . "\"challenge\":\"TZKiB0VFFMF...tQduDJf56AeJAY_BT4NU\"," .
         "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQ...qzZW1lC-jDdFd2pKDUsNnA\"," .
@@ -81,6 +81,7 @@ class ValidateCheckU2FTest extends TestCase implements PILog
         $this->assertEquals("Please confirm with your U2F token (Yubico U2F EE Serial 61730834)", $response->message);
         $this->assertEquals("Please confirm with your U2F token (Yubico U2F EE Serial 61730834)", $response->messages);
         $this->assertEquals("12399202888279169736", $response->transactionID);
+        $this->assertEquals("u2f", $response->preferredClientMode);
         $this->assertIsArray($response->multiChallenge);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);

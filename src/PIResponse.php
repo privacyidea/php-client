@@ -13,6 +13,9 @@ class PIResponse
     /* @var string TransactionID is used to reference the challenges contained in this response in later requests. */
     public $transactionID = "";
 
+    /* @var string Preferred mode in which client should work after triggering challenges. */
+    public $preferredClientMode = "";
+
     /* @var string Raw response in JSON format. */
     public $raw = "";
 
@@ -85,6 +88,10 @@ class PIResponse
         {
             $ret->transactionID = $map['detail']['transaction_id'];
         }
+        if (isset($map['detail']['preferred_client_mode']))
+        {
+            $ret->preferredClientMode = $map['detail']['preferred_client_mode'];
+        }
 
         // Check that the authentication status is one of the allowed ones
         $r = null;
@@ -154,7 +161,7 @@ class PIResponse
                     $tmp->u2fSignRequest = json_encode($t);
                 }
 
-                array_push($ret->multiChallenge, $tmp);
+                $ret->multiChallenge[] = $tmp;
             }
         }
         return $ret;
@@ -182,12 +189,12 @@ class PIResponse
     {
         foreach ($this->multiChallenge as $challenge)
         {
-            if ($challenge->type !== "push" && $challenge->type !== "webauthn")
+            if ($challenge->type !== "push" && $challenge->type !== "webauthn" && $challenge->type !== "u2f")
             {
                 return $challenge->message;
             }
         }
-        return false;
+        return "";
     }
 
     /**
