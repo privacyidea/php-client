@@ -1,0 +1,43 @@
+name: Run tests and cov report
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+  
+    permissions:
+      write-all
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      uses: php-actions/composer@v6
+      with:
+        dev: yes
+        
+    - name: Run PHPUnit Tests
+      uses: php-actions/phpunit@master
+      with:
+        php_version: 7.3
+        php_extensions: xdebug
+        bootstrap: vendor/autoload.php
+        configuration: test/utils/phpunit.xml
+        args: --coverage-text
+      env:
+        XDEBUG_MODE: coverage
+      
+    - name: Update coverage badge
+      uses: timkrase/phpunit-coverage-badge@v1.2.0
+      with:
+        report: test/utils/_coverage/clover.xml
+        report_type: clover
+
+      
+      
