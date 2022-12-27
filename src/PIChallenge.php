@@ -10,6 +10,9 @@ class PIChallenge
     /* @var string Message for this challenge. */
     public $message = "";
 
+    /* @var string Image data for this challenge. */
+    public $img = "";
+
     /* @var string TransactionId to reference this challenge in later requests. */
     public $transactionID = "";
 
