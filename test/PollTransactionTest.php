@@ -40,7 +40,7 @@ class PollTransactionTest extends TestCase implements PILog
      */
     public function testTriggerPUSH()
     {
-        $responseBody = "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"push\"," . "    \"attributes\": null,\n" .
+        $responseBody = "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"poll\"," . "    \"attributes\": null,\n" .
             "    \"message\": \"Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!\",\n" .
             "    \"messages\": [\n" . "      \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
             "      \"Please confirm the authentication on your mobile device!\"\n" . "    ],\n" .
