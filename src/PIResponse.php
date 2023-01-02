@@ -97,7 +97,19 @@ class PIResponse
         }
         if (isset($map['detail']['preferred_client_mode']))
         {
-            $ret->preferredClientMode = $map['detail']['preferred_client_mode'];
+            $pref = $map['detail']['preferred_client_mode'];
+            if ($pref === "poll")
+            {
+                $ret->preferredClientMode = "push";
+            }
+            elseif ($pref === "interactive")
+            {
+                $ret->preferredClientMode = "otp";
+            }
+            else
+            {
+                $ret->preferredClientMode = $map['detail']['preferred_client_mode'];
+            }
         }
 
         // Check that the authentication status is one of the allowed ones
