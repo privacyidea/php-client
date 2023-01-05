@@ -1,4 +1,4 @@
-name: Run tests and cov report
+name: PHP & Composer
 
 on:
   push:
@@ -16,6 +16,43 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Check PHP installation
+      run: php -m
+      
+    - name: Check PHP packages
+      run: dpkg --get-selections | grep -i php
+
+name: Check composer, run tests with cov report
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+  
+    permissions:
+      write-all
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Check PHP installation
+      run: php -m
+      
+    - name: Check PHP packages
+      run: dpkg --get-selections | grep -i php
     
     - name: Install dependencies
       uses: php-actions/composer@v6
