@@ -101,6 +101,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
         $this->assertEquals("WAN00025CE7", $response->multiChallenge[0]->serial);
         $this->assertEquals("webauthn", $response->multiChallenge[0]->type);
         $this->assertArrayHasKey("img", $response->multiChallenge[0]->attributes);
+        $this->assertEquals("static/img/FIDO-U2F-Security-Key-444x444.png", $response->multiChallenge[0]->img);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->webauthnMessage());

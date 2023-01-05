@@ -42,7 +42,9 @@ class TriggerChallengeTest extends TestCase implements PILog
      */
     public function testTriggerChallengeSuccess()
     {
-        $responseBody = "{\"detail\":{" . "\"preferred_client_mode\":\"interactive\"," . "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
+        $responseBody = "{\"detail\":{" . "\"preferred_client_mode\":\"interactive\"," .
+            "\"image\": \"data:image/png;base64,iVBdgfgsdfgRK5CYII=\",\n" .
+            "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"serial\":\"TOTP00021198\"," . "\"transaction_id\":\"16734787285577957577\"," .
@@ -86,6 +88,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
         $this->assertEquals("16734787285577957577", $response->transactionID);
         $this->assertEquals("otp", $response->preferredClientMode);
+        $this->assertEquals("data:image/png;base64,iVBdgfgsdfgRK5CYII=", $response->image);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("totp", $response->triggeredTokenTypes()[0]);
