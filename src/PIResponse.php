@@ -156,6 +156,7 @@ class PIResponse
                 $tmp->message = $challenge['message'];
                 $tmp->serial = $challenge['serial'];
                 $tmp->type = $challenge['type'];
+                $tmp->clientMode = $challenge['client_mode'];
                 if (isset($challenge['image']))
                 {
                     $tmp->image = $challenge['image'];

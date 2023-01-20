@@ -13,6 +13,9 @@ class PIChallenge
     /* @var string Image data for this challenge. */
     public $image = "";
 
+    /* @var string Client mode matching this challenge. */
+    public $clientMode = "";
+
     /* @var string TransactionId to reference this challenge in later requests. */
     public $transactionID = "";
 
