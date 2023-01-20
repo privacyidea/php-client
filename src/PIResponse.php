@@ -13,9 +13,6 @@ class PIResponse
     /* @var string TransactionID is used to reference the challenges contained in this response in later requests. */
     public $transactionID = "";
 
-    /* @var string QR Code to enroll a new token. */
-    public $image = "";
-
     /* @var string Preferred mode in which client should work after triggering challenges. */
     public $preferredClientMode = "";
 
@@ -91,10 +88,6 @@ class PIResponse
         {
             $ret->transactionID = $map['detail']['transaction_id'];
         }
-        if (isset($map['detail']['image']))
-        {
-            $ret->image = $map['detail']['image'];
-        }
         if (isset($map['detail']['preferred_client_mode']))
         {
             $pref = $map['detail']['preferred_client_mode'];
@@ -163,15 +156,13 @@ class PIResponse
                 $tmp->message = $challenge['message'];
                 $tmp->serial = $challenge['serial'];
                 $tmp->type = $challenge['type'];
+                if (isset($challenge['image']))
+                {
+                    $tmp->image = $challenge['image'];
+                }
                 if (isset($challenge['attributes']))
                 {
                     $tmp->attributes = $challenge['attributes'];
-
-                    // Search for the img
-                    if ($challenge["attributes"]["img"])
-                    {
-                        $tmp->img = $challenge['attributes']['img'];
-                    }
                 }
 
                 if ($tmp->type === "webauthn")
@@ -185,7 +176,6 @@ class PIResponse
                     $t = $challenge['attributes']['u2fSignRequest'];
                     $tmp->u2fSignRequest = json_encode($t);
                 }
-
                 $ret->multiChallenge[] = $tmp;
             }
         }
