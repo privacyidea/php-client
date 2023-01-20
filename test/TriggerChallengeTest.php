@@ -43,12 +43,12 @@ class TriggerChallengeTest extends TestCase implements PILog
     public function testTriggerChallengeSuccess()
     {
         $responseBody = "{\"detail\":{" . "\"preferred_client_mode\":\"interactive\"," .
-            "\"image\": \"data:image/png;base64,iVBdgfgsdfgRK5CYII=\",\n" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
-            "\"serial\":\"TOTP00021198\"," . "\"transaction_id\":\"16734787285577957577\"," .
-            "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," . "\"threadid\":140050885818112," .
+            "\"serial\":\"TOTP00021198\"," . "\"image\": \"data:image/png;base64,iVBdgfgsdfgRK5CYII=\",\n" .
+            "\"transaction_id\":\"16734787285577957577\"," . "\"type\":\"totp\"}]," .
+            "\"serial\":\"TOTP00021198\"," . "\"threadid\":140050885818112," .
             "\"transaction_id\":\"16734787285577957577\"," .
             "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
             "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":false}," .
@@ -88,7 +88,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
         $this->assertEquals("16734787285577957577", $response->transactionID);
         $this->assertEquals("otp", $response->preferredClientMode);
-        $this->assertEquals("data:image/png;base64,iVBdgfgsdfgRK5CYII=", $response->image);
+        $this->assertEquals("data:image/png;base64,iVBdgfgsdfgRK5CYII=", $response->multiChallenge[0]->image);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("totp", $response->triggeredTokenTypes()[0]);

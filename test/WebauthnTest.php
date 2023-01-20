@@ -8,7 +8,7 @@ use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use PHPUnit\Framework\TestCase;
 use utils\UtilsForTests;
 
-class ValidateCheckWebauthnTest extends TestCase implements PILog
+class WebauthnTest extends TestCase implements PILog
 {
     private $pi;
 

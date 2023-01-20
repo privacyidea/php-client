@@ -8,7 +8,7 @@ use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use PHPUnit\Framework\TestCase;
 use utils\UtilsForTests;
 
-class ValidateCheckU2FTest extends TestCase implements PILog
+class U2FTest extends TestCase implements PILog
 {
     private $pi;
 
