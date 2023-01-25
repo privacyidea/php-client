@@ -11,7 +11,7 @@ class PIChallenge
     public $message = "";
 
     /* @var string Image data for this challenge. */
-    public $img = "";
+    public $image = "";
 
     /* @var string TransactionId to reference this challenge in later requests. */
     public $transactionID = "";
