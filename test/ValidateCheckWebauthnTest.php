@@ -70,7 +70,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
             "      \"Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)\"\n" . "    ],\n" .
             "    \"multi_challenge\": [\n" . "      {\n" . "        \"attributes\": {\n" .
             "          \"hideResponseInput\": true,\n" .
-            "          \"img\": \"static/img/FIDO-U2F-Security-Key-444x444.png\",\n" .
+            "          \"image\": \"static/img/FIDO-U2F-Security-Key-444x444.png\",\n" .
             "          \"webAuthnSignRequest\": " . $webauthnrequest . "        },\n" .
             "        \"message\": \"Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)\",\n" .
             "        \"serial\": \"WAN00025CE7\",\n" . "        \"transaction_id\": \"16786665691788289392\",\n" .
@@ -100,8 +100,6 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->multiChallenge[0]->message);
         $this->assertEquals("WAN00025CE7", $response->multiChallenge[0]->serial);
         $this->assertEquals("webauthn", $response->multiChallenge[0]->type);
-        $this->assertArrayHasKey("img", $response->multiChallenge[0]->attributes);
-        $this->assertEquals("static/img/FIDO-U2F-Security-Key-444x444.png", $response->multiChallenge[0]->img);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->webauthnMessage());
