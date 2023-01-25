@@ -16,6 +16,9 @@ class PIChallenge
     /* @var string TransactionId to reference this challenge in later requests. */
     public $transactionID = "";
 
+    /* @var string Client mode in which the challenge should be processed. */
+    public $clientMode = "";
+
     /* @var string Serial of the token this challenge is for. */
     public $serial = "";
 
