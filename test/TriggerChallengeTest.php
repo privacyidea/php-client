@@ -48,6 +48,7 @@ class TriggerChallengeTest extends TestCase implements PILog
             "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"serial\":\"TOTP00021198\"," . "\"transaction_id\":\"16734787285577957577\"," .
+            "\"image\":\"dataimage\"," .
             "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," . "\"threadid\":140050885818112," .
             "\"transaction_id\":\"16734787285577957577\"," .
             "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
@@ -83,6 +84,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->pi->serviceAccountRealm = "testServiceRealm";
 
         $response = $this->pi->triggerchallenge("testUser");
+        $multiChallenge = $response->multiChallenge;
 
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->message);
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
@@ -96,6 +98,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("", $response->webauthnMessage());
         $this->assertEquals("", $response->u2fMessage());
         $this->assertEquals("", $response->pushMessage());
+        $this->assertEquals("dataimage", $multiChallenge[0]->image);
     }
 
     /**
