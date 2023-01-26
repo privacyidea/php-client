@@ -45,7 +45,7 @@ jobs:
     - name: Coverage Comment and Badge
       uses: ewjoachim/coverage-comment-action@v1.0.3
       with:
-        COVERAGE_FILE: _coverage/clover.xml
+        COVERAGE_FILE: test/utils/_coverage/clover.xml
         MINIMUM_GREEN: 90
         
 
