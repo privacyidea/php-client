@@ -42,7 +42,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
      */
     public function testTriggerWebAuthn()
     {
-        $webauthnrequest = "{\n" . "            \"allowCredentials\": [\n" . "              {\n" .
+        $webauthnSignRequest = "{\n" . "            \"allowCredentials\": [\n" . "              {\n" .
             "                \"id\": \"83De8z_CNqogB6aCyKs6dWIqwpOpzVoNaJ74lgcpuYN7l-95QsD3z-qqPADqsFlPwBXCMqEPssq75kqHCMQHDA\",\n" .
             "                \"transports\": [\n" . "                  \"internal\",\n" .
             "                  \"nfc\",\n" . "                  \"ble\",\n" .
@@ -70,10 +70,10 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
             "      \"Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)\"\n" . "    ],\n" .
             "    \"multi_challenge\": [\n" . "      {\n" . "        \"attributes\": {\n" .
             "          \"hideResponseInput\": true,\n" .
-            "          \"image\": \"static/img/FIDO-U2F-Security-Key-444x444.png\",\n" .
-            "          \"webAuthnSignRequest\": " . $webauthnrequest . "        },\n" .
+            "          \"webAuthnSignRequest\": " . $webauthnSignRequest . "        },\n" .
             "        \"message\": \"Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)\",\n" .
-            "        \"serial\": \"WAN00025CE7\",\n" . "        \"transaction_id\": \"16786665691788289392\",\n" .
+            "        \"serial\": \"WAN00025CE7\",\n" . "          \"image\": \"dataimage\",\n" .
+            "        \"transaction_id\": \"16786665691788289392\",\n" .
             "        \"type\": \"webauthn\"\n" . "      }\n" . "    ],\n" . "    \"serial\": \"WAN00025CE7\",\n" .
             "    \"threadid\": 140040275289856,\n" . "    \"transaction_id\": \"16786665691788289392\",\n" .
             "    \"transaction_ids\": [\n" . "      \"16786665691788289392\"\n" . "    ],\n" .
@@ -100,10 +100,11 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->multiChallenge[0]->message);
         $this->assertEquals("WAN00025CE7", $response->multiChallenge[0]->serial);
         $this->assertEquals("webauthn", $response->multiChallenge[0]->type);
+        $this->assertEquals("dataimage", $response->multiChallenge[0]->image);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("Please confirm with your WebAuthn token (Yubico U2F EE Serial 61730834)", $response->webauthnMessage());
-        $temp = str_replace(" ", "", $webauthnrequest);
+        $temp = str_replace(" ", "", $webauthnSignRequest);
         $trimmedSignRequest = str_replace("\n", "", $temp);
         $this->assertEquals($trimmedSignRequest, $response->webauthnSignRequest());
     }
