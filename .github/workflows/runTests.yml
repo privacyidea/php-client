@@ -43,10 +43,10 @@ jobs:
         XDEBUG_MODE: coverage
         
     - name: Coverage Comment and Badge
-      uses: ewjoachim/coverage-comment-action@v1.0.3
+      uses: GreatWizard/coverage-diff-action@v1.0.8
       with:
-        COVERAGE_FILE: test/utils/_coverage/clover.xml
-        MINIMUM_GREEN: 90
+        coverage-filename: test/utils/_coverage/coverage.json
+        badge-threshold-green: 95
         
 
       
