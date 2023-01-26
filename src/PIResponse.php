@@ -171,6 +171,11 @@ class PIResponse
                 {
                     $tmp->attributes = $challenge['attributes'];
                 }
+                if (isset($challenge['client_mode']))
+                {
+                    $tmp->clientMode = $challenge['client_mode'];
+                }
+
                 if ($tmp->type === "webauthn")
                 {
                     $t = $challenge['attributes']['webAuthnSignRequest'];

@@ -47,10 +47,9 @@ class TriggerChallengeTest extends TestCase implements PILog
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
-            "\"serial\":\"TOTP00021198\"," . "\"transaction_id\":\"16734787285577957577\"," .
-            "\"image\":\"dataimage\"," .
-            "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," . "\"threadid\":140050885818112," .
-            "\"transaction_id\":\"16734787285577957577\"," .
+            "\"serial\":\"TOTP00021198\"," . "\"client_mode\":\"interactive\"," . "\"image\":\"dataimage\"," .
+            "\"transaction_id\":\"16734787285577957577\"," . "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," .
+            "\"threadid\":140050885818112," . "\"transaction_id\":\"16734787285577957577\"," .
             "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
             "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":false}," .
             "\"time\":1649666174.5351279," . "\"version\":\"privacyIDEA3.6.3\"," .
@@ -86,6 +85,8 @@ class TriggerChallengeTest extends TestCase implements PILog
         $response = $this->pi->triggerchallenge("testUser");
         $multiChallenge = $response->multiChallenge;
 
+        $multiChallenge = $response->multiChallenge;
+
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->message);
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
         $this->assertEquals("16734787285577957577", $response->transactionID);
@@ -99,6 +100,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("", $response->u2fMessage());
         $this->assertEquals("", $response->pushMessage());
         $this->assertEquals("dataimage", $multiChallenge[0]->image);
+        $this->assertEquals("interactive", $multiChallenge[0]->clientMode);
     }
 
     /**
