@@ -1,12 +1,12 @@
 <?php
 
-require_once(__DIR__ . '/../src/Client-Autoloader.php');
+//require_once(__DIR__ . '/../src/Client-Autoloader.php');
 require_once(__DIR__ . '/../vendor/autoload.php');
-require_once('utils/UtilsForTests.php');
+require_once('utils/Utils.php');
 
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use PHPUnit\Framework\TestCase;
-use utils\UtilsForTests;
+use utils\Utils;
 
 class ValidateCheckTest extends TestCase implements PILog
 {
@@ -50,14 +50,14 @@ class ValidateCheckTest extends TestCase implements PILog
             ->methodIs('POST')
             ->pathIs('/validate/check')
             ->then()
-            ->body(UtilsForTests::responseBodySuccess())
+            ->body(Utils::matchingOneTokenResponseBody())
             ->end();
         $this->http->setUp();
 
         $response = $this->pi->validateCheck("testUser", "testPass");
 
         $this->assertEquals("matching 1 tokens", $response->message);
-        $this->assertEquals(UtilsForTests::responseBodySuccess(), $response->raw);
+        $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->raw);
         $this->assertTrue($response->status);
         $this->assertTrue($response->value);
         $this->assertEquals("", $response->otpMessage());
@@ -97,18 +97,12 @@ class ValidateCheckTest extends TestCase implements PILog
      */
     public function testUserNotFound()
     {
-        $responseBody =
-            "{" . "\"detail\":null," . "\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"error\":{" .
-            "\"code\":904," . "\"message\":\"ERR904: The user can not be found in any resolver in this realm!\"}," .
-            "\"status\":false}," . "\"time\":1649752303.65651," . "\"version\":\"privacyIDEA 3.6.3\"," .
-            "\"signature\":\"rsa_sha256_pss:1c64db29cad0dc127d6...5ec143ee52a7804ea1dc8e23ab2fc90ac0ac147c0\"}";
-
         $this->http->mock
             ->when()
             ->methodIs('POST')
             ->pathIs('/validate/check')
             ->then()
-            ->body($responseBody)
+            ->body(Utils::errorUserNotFoundResponseBody())
             ->end();
         $this->http->setUp();
 

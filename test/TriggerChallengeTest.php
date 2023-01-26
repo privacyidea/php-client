@@ -1,12 +1,12 @@
 <?php
 
-require_once(__DIR__ . '/../src/Client-Autoloader.php');
+//require_once(__DIR__ . '/../src/Client-Autoloader.php');
 require_once(__DIR__ . '/../vendor/autoload.php');
-require_once('utils/UtilsForTests.php');
+require_once('utils/Utils.php');
 
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use PHPUnit\Framework\TestCase;
-use utils\UtilsForTests;
+use utils\Utils;
 
 class TriggerChallengeTest extends TestCase implements PILog
 {
@@ -42,30 +42,12 @@ class TriggerChallengeTest extends TestCase implements PILog
      */
     public function testTriggerChallengeSuccess()
     {
-        $responseBody = "{\"detail\":{" . "\"preferred_client_mode\":\"interactive\"," .
-            "\"image\": \"data:image/png;base64,iVBdgfgsdfgRK5CYII=\",\n" .
-            "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
-            "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
-            "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
-            "\"serial\":\"TOTP00021198\"," . "\"client_mode\":\"interactive\"," . "\"image\":\"dataimage\"," .
-            "\"transaction_id\":\"16734787285577957577\"," . "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," .
-            "\"threadid\":140050885818112," . "\"transaction_id\":\"16734787285577957577\"," .
-            "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
-            "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":false}," .
-            "\"time\":1649666174.5351279," . "\"version\":\"privacyIDEA3.6.3\"," .
-            "\"versionnumber\":\"3.6.3\"," .
-            "\"signature\":\"rsa_sha256_pss:4b0f0e12c2...89409a2e65c87d27b\"}";
-
-        $authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicmVhbG0iOiIiLCJub25jZSI6IjVjOTc4NWM5OWU";
-
-        $responseBodyAuth = UtilsForTests::authToken($authToken);
-
         $this->http->mock
             ->when()
             ->methodIs('POST')
             ->pathIs('/validate/triggerchallenge')
             ->then()
-            ->body($responseBody)
+            ->body(Utils::tcSuccessResponseBody())
             ->end();
         $this->http->setUp();
 
@@ -74,7 +56,7 @@ class TriggerChallengeTest extends TestCase implements PILog
             ->methodIs('POST')
             ->pathIs('/auth')
             ->then()
-            ->body($responseBodyAuth)
+            ->body(Utils::postAuthResponseBody())
             ->end();
         $this->http->setUp();
 
@@ -83,15 +65,12 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->pi->serviceAccountRealm = "testServiceRealm";
 
         $response = $this->pi->triggerchallenge("testUser");
-        $multiChallenge = $response->multiChallenge;
-
-        $multiChallenge = $response->multiChallenge;
 
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->message);
         $this->assertEquals("BittegebenSieeinenOTP-Wertein:", $response->messages);
         $this->assertEquals("16734787285577957577", $response->transactionID);
         $this->assertEquals("otp", $response->preferredClientMode);
-        $this->assertEquals("data:image/png;base64,iVBdgfgsdfgRK5CYII=", $response->image);
+        $this->assertEquals(Utils::imageData(), $response->image);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
         $this->assertEquals("totp", $response->triggeredTokenTypes()[0]);
@@ -99,8 +78,8 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("", $response->webauthnMessage());
         $this->assertEquals("", $response->u2fMessage());
         $this->assertEquals("", $response->pushMessage());
-        $this->assertEquals("dataimage", $multiChallenge[0]->image);
-        $this->assertEquals("interactive", $multiChallenge[0]->clientMode);
+        $this->assertEquals(Utils::imageData(), $response->multiChallenge[0]->image);
+        $this->assertEquals("interactive", $response->multiChallenge[0]->clientMode);
     }
 
     /**
