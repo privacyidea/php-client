@@ -12,7 +12,12 @@
 	</coverage>
 	<testsuites>
 		<testsuite name="main">
-			<directory suffix="Test.php">../</directory>
+			<directory suffix="EnrollTokenTest.php">../</directory>
+			<directory suffix="PollTransactionTest.php">../</directory>
+			<directory suffix="TriggerChallengeTest.php">../</directory>
+			<directory suffix="ValidateCheckTest.php">../</directory>
+			<directory suffix="ValidateCheckU2FTest.php">../</directory>
+			<directory suffix="ValidateCheckWebauthnTest.php">../</directory>
 		</testsuite>
 	</testsuites>
 	<logging/>
