@@ -43,7 +43,7 @@ jobs:
         XDEBUG_MODE: coverage
         
     - name: Coverage Comment and Badge
-      uses: ewjoachim/coverage-comment-action@master
+      uses: ewjoachim/coverage-comment-action@v1.0.3
       with:
         COVERAGE_FILE: _coverage/clover.xml
         MINIMUM_GREEN: 90
