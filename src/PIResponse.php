@@ -163,15 +163,13 @@ class PIResponse
                 $tmp->message = $challenge['message'];
                 $tmp->serial = $challenge['serial'];
                 $tmp->type = $challenge['type'];
+                if (isset($challenge['image']))
+                {
+                    $tmp->image = $challenge['image'];
+                }
                 if (isset($challenge['attributes']))
                 {
                     $tmp->attributes = $challenge['attributes'];
-
-                    // Search for the img
-                    if ($challenge["attributes"]["img"])
-                    {
-                        $tmp->img = $challenge['attributes']['img'];
-                    }
                 }
                 if (isset($challenge['client_mode']))
                 {
@@ -183,7 +181,6 @@ class PIResponse
                     $t = $challenge['attributes']['webAuthnSignRequest'];
                     $tmp->webAuthnSignRequest = json_encode($t);
                 }
-
                 if ($tmp->type === "u2f")
                 {
                     $t = $challenge['attributes']['u2fSignRequest'];

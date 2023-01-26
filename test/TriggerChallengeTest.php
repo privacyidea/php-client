@@ -47,7 +47,7 @@ class TriggerChallengeTest extends TestCase implements PILog
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
             "\"messages\":[\"BittegebenSieeinenOTP-Wertein:\"]," . "\"multi_challenge\":[{" .
             "\"attributes\":null," . "\"message\":\"BittegebenSieeinenOTP-Wertein:\"," .
-            "\"serial\":\"TOTP00021198\"," . "\"client_mode\":\"interactive\"," .
+            "\"serial\":\"TOTP00021198\"," . "\"client_mode\":\"interactive\"," . "\"image\":\"dataimage\"," .
             "\"transaction_id\":\"16734787285577957577\"," . "\"type\":\"totp\"}]," . "\"serial\":\"TOTP00021198\"," .
             "\"threadid\":140050885818112," . "\"transaction_id\":\"16734787285577957577\"," .
             "\"transaction_ids\":[\"16734787285577957577\"]," . "\"type\":\"totp\"}," . "\"id\":1," .
@@ -83,6 +83,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->pi->serviceAccountRealm = "testServiceRealm";
 
         $response = $this->pi->triggerchallenge("testUser");
+        $multiChallenge = $response->multiChallenge;
 
         $multiChallenge = $response->multiChallenge;
 
@@ -98,6 +99,7 @@ class TriggerChallengeTest extends TestCase implements PILog
         $this->assertEquals("", $response->webauthnMessage());
         $this->assertEquals("", $response->u2fMessage());
         $this->assertEquals("", $response->pushMessage());
+        $this->assertEquals("dataimage", $multiChallenge[0]->image);
         $this->assertEquals("interactive", $multiChallenge[0]->clientMode);
     }
 
