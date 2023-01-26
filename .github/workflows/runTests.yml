@@ -41,12 +41,13 @@ jobs:
         args: --coverage-text
       env:
         XDEBUG_MODE: coverage
-      
-    - name: Update coverage badge
-      uses: timkrase/phpunit-coverage-badge@v1.2.0
+        
+    - name: Coverage Comment and Badge
+      uses: ewjoachim/coverage-comment-action@master
       with:
-        report: test/utils/_coverage/clover.xml
-        report_type: clover
+        COVERAGE_FILE: _coverage/clover.xml
+        MINIMUM_GREEN: 90
+        
 
       
       
