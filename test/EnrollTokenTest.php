@@ -57,10 +57,10 @@ class EnrollTokenTest extends TestCase implements PILog
             ->when()
             ->methodIs('POST')
             ->headerIs("Authorization", Utils::authToken())
-                                             ->pathIs('/token/init')
-                                             ->then()
-                                             ->body(Utils::tokenInitResponseBody())
-                                             ->end();
+            ->pathIs('/token/init')
+            ->then()
+            ->body(Utils::tokenInitResponseBody())
+            ->end();
         $this->http->setUp();
 
         $this->pi->serviceAccountName = "TestServiceAccount";
@@ -86,9 +86,9 @@ class EnrollTokenTest extends TestCase implements PILog
     {
         $response = $this->pi->enrollToken(
             "testUser",
-        "1",
-        "totp",
-        "Enrolled for test");
+            "1",
+            "totp",
+            "Enrolled for test");
 
         $this->assertNull($response);
     }

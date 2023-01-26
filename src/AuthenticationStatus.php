@@ -1,4 +1,5 @@
 <?php
+
 abstract class AuthenticationStatus
 {
     const CHALLENGE = "CHALLENGE";
