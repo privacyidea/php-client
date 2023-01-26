@@ -42,11 +42,11 @@ jobs:
       env:
         XDEBUG_MODE: coverage
         
-    - name: Coverage Comment and Badge
-      uses: ewjoachim/coverage-comment-action@v1.0.3
+    - name: Coverage Comment
+      uses: kuju63/coverage-comment@v1.2.4
       with:
-        COVERAGE_FILE: test/utils/_coverage/clover.xml
-        MINIMUM_GREEN: 90
+        paths: test/utils/_coverage/coverage.json
+        type: json
         
 
       
