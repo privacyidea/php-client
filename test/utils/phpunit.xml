@@ -8,7 +8,6 @@
 			<html outputDirectory="./_coverage" lowUpperBound="35" highLowerBound="70"/>
 			<text outputFile="php://stdout" showUncoveredFiles="true"/>
 			<clover outputFile="_coverage/clover.xml"/>
-			<json outputFile="_coverage/coverage.json"/>
 		</report>
 	</coverage>
 	<testsuites>
