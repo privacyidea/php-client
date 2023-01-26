@@ -42,11 +42,11 @@ jobs:
       env:
         XDEBUG_MODE: coverage
         
-    - name: Coverage Comment and Badge
-      uses: GreatWizard/coverage-diff-action@v1.0.8
+    - name: Coverage Comment
+      uses: kuju63/coverage-comment@v1.2.4
       with:
-        coverage-filename: test/utils/_coverage/coverage.json
-        badge-threshold-green: 95
+        paths: test/utils/_coverage/clover.xml
+        type: clover
         
 
       
