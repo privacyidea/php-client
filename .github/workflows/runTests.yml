@@ -45,8 +45,7 @@ jobs:
     - name: Coverage Comment
       uses: kuju63/coverage-comment@v1.2.4
       with:
-        paths: test/utils/_coverage/coverage.json
-        type: json
+        paths: test/utils/_coverage/clover.xml
         
 
       
