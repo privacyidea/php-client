@@ -1,7 +1,6 @@
-### v1.0.0 26-01-2023
-**Features:**
-* Possibility to enroll a new token via challenge
-* Implementation of the preferred client mode
+### v1.0.0 27-01-2023
+* Added a possibility to enroll a new token via challenge (#23)
+* Implementation of the preferred client mode (#20)
 
 ### v0.9.3 24-01-2022
 
