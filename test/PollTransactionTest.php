@@ -1,10 +1,12 @@
 <?php
 
-require_once(__DIR__ . '/../src/Client-Autoloader.php');
+//require_once(__DIR__ . '/../src/Client-Autoloader.php');
 require_once(__DIR__ . '/../vendor/autoload.php');
+require_once("utils/Utils.php");
 
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use PHPUnit\Framework\TestCase;
+use utils\Utils;
 
 class PollTransactionTest extends TestCase implements PILog
 {
@@ -38,35 +40,14 @@ class PollTransactionTest extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
-    public function testTriggerPUSH()
+    public function testTriggerPushToken()
     {
-        $responseBody = "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"poll\"," . "    \"attributes\": null,\n" .
-            "    \"message\": \"Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!\",\n" .
-            "    \"messages\": [\n" . "      \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
-            "      \"Please confirm the authentication on your mobile device!\"\n" . "    ],\n" .
-            "    \"multi_challenge\": [\n" . "      {\n" . "        \"attributes\": null,\n" .
-            "        \"message\": \"Bitte geben Sie einen OTP-Wert ein: \",\n" .
-            "        \"serial\": \"OATH00020121\",\n" .
-            "        \"transaction_id\": \"02659936574063359702\",\n" . "        \"type\": \"hotp\"\n" .
-            "      },\n" . "      {\n" . "        \"attributes\": null,\n" .
-            "        \"message\": \"Please confirm the authentication on your mobile device!\",\n" .
-            "        \"serial\": \"PIPU0001F75E\",\n" .
-            "        \"transaction_id\": \"02659936574063359702\",\n" . "        \"type\": \"push\"\n" .
-            "      }\n" . "    ],\n" . "    \"serial\": \"PIPU0001F75E\",\n" .
-            "    \"threadid\": 140040525666048,\n" . "    \"transaction_id\": \"02659936574063359702\",\n" .
-            "    \"transaction_ids\": [\n" . "      \"02659936574063359702\",\n" .
-            "      \"02659936574063359702\"\n" . "    ],\n" . "    \"type\": \"push\"\n" . "  },\n" .
-            "  \"id\": 1,\n" . "  \"jsonrpc\": \"2.0\",\n" . "  \"result\": {\n" .
-            "    \"status\": true,\n" . "    \"value\": false\n" . "  },\n" .
-            "  \"time\": 1589360175.594304,\n" . "  \"version\": \"privacyIDEA 3.2.1\",\n" .
-            "  \"versionnumber\": \"3.2.1\",\n" . "  \"signature\": \"rsa_sha256_pss:AAAAAAAAAA\"\n" . "}";
-
         $this->http->mock
             ->when()
             ->methodIs('POST')
             ->pathIs('/validate/check')
             ->then()
-            ->body($responseBody)
+            ->body(Utils::triggerPushTokenResponseBody())
             ->end();
         $this->http->setUp();
 
@@ -79,7 +60,7 @@ class PollTransactionTest extends TestCase implements PILog
         $this->assertIsArray($response->multiChallenge);
         $this->assertTrue($response->status);
         $this->assertFalse($response->value);
-        $this->assertEquals($responseBody, $response->raw);
+        $this->assertEquals(Utils::triggerPushTokenResponseBody(), $response->raw);
         $this->assertEquals("Please confirm the authentication on your mobile device!", $response->pushMessage());
         $this->assertEquals("hotp", $response->triggeredTokenTypes()[0]);
         $this->assertEquals("push", $response->triggeredTokenTypes()[1]);
@@ -90,24 +71,12 @@ class PollTransactionTest extends TestCase implements PILog
      */
     public function testSuccess()
     {
-        $respPolling = '{
-                "id": 1,
-          "jsonrpc": "2.0",
-          "result": {
-                    "status": true,
-            "value": true
-          },
-          "version": "privacyIDEA 3.5.2",
-          "versionnumber": "3.5.2",
-          "signature": "rsa_sha256_pss:12345"
-        }';
-
         $this->http->mock
             ->when()
             ->methodIs('GET')
             ->pathIs('/validate/polltransaction')
             ->then()
-            ->body($respPolling)
+            ->body(Utils::pollingResponseBody())
             ->end();
         $this->http->setUp();
 

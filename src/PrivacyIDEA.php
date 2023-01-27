@@ -373,7 +373,7 @@ class PrivacyIDEA
      * @param $httpMethod string GET or POST
      * @param $endpoint string endpoint of the privacyIDEA API (e.g. /validate/check)
      * @return string returns a string with the response from server
-     * @throws PIBadRequestException if an error occurres
+     * @throws PIBadRequestException if an error occurs
      */
     public function sendRequest(array $params, array $headers, $httpMethod, $endpoint)
     {
