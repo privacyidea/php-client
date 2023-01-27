@@ -187,6 +187,11 @@ class PrivacyIDEA
             return null;
         }
 
+        if (!empty($this->realm))
+        {
+            $params["realm"] = $this->realm;
+        }
+
         $params["user"] = $username;
         $params["genkey"] = $genkey;
         $params["type"] = $type;
@@ -198,7 +203,7 @@ class PrivacyIDEA
         $header = array("authorization:" . $authToken);
 
         // Check if user has token
-        $tokenInfo = json_decode($this->sendRequest(array("user" => $username), $header, 'GET', '/token'));
+        $tokenInfo = json_decode($this->sendRequest(array("user" => $username, "realm" => $params["realm"]), $header, 'GET', '/token'));
 
         if (!empty($tokenInfo->result->value->tokens))
         {
