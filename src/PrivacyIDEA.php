@@ -187,16 +187,8 @@ class PrivacyIDEA
             return null;
         }
 
-        if (!empty($this->realm))
-        {
-            $params["realm"] = $this->realm;
-        }
-        else
-        {
-            $params["realm"] = "";
-        }
-
         $params["user"] = $username;
+        $params["realm"] = $this->realm;
         $params["genkey"] = $genkey;
         $params["type"] = $type;
         $params["description"] = in_array("description", $params) ? $description : "";
