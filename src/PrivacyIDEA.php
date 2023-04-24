@@ -191,6 +191,10 @@ class PrivacyIDEA
         {
             $params["realm"] = $this->realm;
         }
+        else
+        {
+            $params["realm"] = "";
+        }
 
         $params["user"] = $username;
         $params["genkey"] = $genkey;
