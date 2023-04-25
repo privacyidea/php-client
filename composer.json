@@ -27,7 +27,7 @@
     "ext-curl": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "*",
+    "phpunit/phpunit": "<=9.6.7",
     "internations/http-mock": "*"
   }
 }
