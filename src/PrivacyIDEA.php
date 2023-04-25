@@ -400,6 +400,16 @@ class PrivacyIDEA
             curl_setopt($curlInstance, CURLOPT_POST, true);
             curl_setopt($curlInstance, CURLOPT_POSTFIELDS, $params);
         }
+        elseif ($httpMethod === "PUT")
+        {
+            curl_setopt($curlInstance, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($curlInstance, CURLOPT_POSTFIELDS, $params);
+        }
+        elseif ($httpMethod === "DELETE")
+        {
+            curl_setopt($curlInstance, CURLOPT_CUSTOMREQUEST, "DELETE");
+            curl_setopt($curlInstance, CURLOPT_POSTFIELDS, $params);
+        }
         elseif ($httpMethod === "GET")
         {
             $paramsStr = '?';
