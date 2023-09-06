@@ -51,7 +51,7 @@ class PollTransactionTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheck("testUser", "testPass");
+        $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept-language:en'));
 
         $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->message);
         $this->assertEquals("Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!", $response->messages);
@@ -80,7 +80,7 @@ class PollTransactionTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->pollTransaction("1234567890");
+        $response = $this->pi->pollTransaction("1234567890", array('accept-language:en'));
 
         $this->assertNotNull($response);
         $this->assertTrue($response);

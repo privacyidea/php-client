@@ -87,7 +87,7 @@ class TriggerChallengeTest extends TestCase implements PILog
      */
     public function testNoServiceAccount()
     {
-        $response = $this->pi->triggerchallenge("testUser");
+        $response = $this->pi->triggerchallenge("testUser", array('accept-language:en'));
 
         $this->assertNull($response);
     }
