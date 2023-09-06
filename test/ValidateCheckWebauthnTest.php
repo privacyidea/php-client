@@ -84,7 +84,7 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheckWebAuthn("testUser", "12345678", Utils::webauthnSignResponse(), "test.it", array('accept_language:en'));
+        $response = $this->pi->validateCheckWebAuthn("testUser", "12345678", Utils::webauthnSignResponse(), "test.it", array('accept-language:en'));
 
         $this->assertNotNull($response);
         $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->raw);

@@ -51,7 +51,7 @@ class ValidateCheckU2FTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept_language:en'));
+        $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept-language:en'));
 
         $this->assertEquals("Please confirm with your U2F token (Yubico U2F EE Serial 61730834)", $response->message);
         $this->assertEquals("Please confirm with your U2F token (Yubico U2F EE Serial 61730834)", $response->messages);
@@ -82,7 +82,7 @@ class ValidateCheckU2FTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheckU2F("testUser", "12345678", Utils::u2fSignResponse(), array('accept_language:en'));
+        $response = $this->pi->validateCheckU2F("testUser", "12345678", Utils::u2fSignResponse(), array('accept-language:en'));
 
         $this->assertEquals("matching 1 tokens", $response->message);
         $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->raw);

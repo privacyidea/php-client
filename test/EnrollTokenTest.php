@@ -72,7 +72,7 @@ class EnrollTokenTest extends TestCase implements PILog
             "1",
             "totp",
             "Enrolled for test",
-            array('accept_language:en'));
+            array('accept-language:en'));
 
         $this->assertNotNull($response);
         $this->assertIsObject($response);

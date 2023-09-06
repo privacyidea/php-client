@@ -54,7 +54,7 @@ class ValidateCheckTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept_language:en'));
+        $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept-language:en'));
 
         $this->assertEquals("matching 1 tokens", $response->message);
         $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->raw);
@@ -77,7 +77,7 @@ class ValidateCheckTest extends TestCase implements PILog
             ->end();
         $this->http->setUp();
 
-        $response = $this->pi->validateCheck("testUser", "testPass", "123456677", array('accept_language:en'));
+        $response = $this->pi->validateCheck("testUser", "testPass", "123456677");
 
         $this->assertNull($response);
     }
