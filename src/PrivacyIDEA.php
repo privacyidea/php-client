@@ -62,10 +62,11 @@ class PrivacyIDEA
      * @param $username string
      * @param $pass string this can be the OTP, but also the PIN to trigger a token or PIN+OTP depending on the configuration of the server.
      * @param null $transactionID Optional transaction ID. Used to reference a challenge that was triggered beforehand.
+     * @param null $headers Optional headers array to forward to the server.
      * @return PIResponse|null null if response was empty or malformed, or parameter missing
      * @throws PIBadRequestException
      */
-    public function validateCheck($username, $pass, $transactionID = null)
+    public function validateCheck($username, $pass, $transactionID = null, $headers=null)
     {
         assert('string' === gettype($username));
         assert('string' === gettype($pass));
@@ -79,12 +80,20 @@ class PrivacyIDEA
                 // Add transaction ID in case of challenge response
                 $params["transaction_id"] = $transactionID;
             }
+            if (!empty($headers))
+            {
+                $head = $headers;
+            }
+            else
+            {
+                $head = array('');
+            }
             if ($this->realm)
             {
                 $params["realm"] = $this->realm;
             }
 
-            $response = $this->sendRequest($params, array(''), 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
 
             $ret = PIResponse::fromJSON($response, $this);
             if ($ret == null)
@@ -105,17 +114,18 @@ class PrivacyIDEA
      * This function requires a service account to be set.
      *
      * @param string $username
+     * @param null $headers Optional headers array to forward to the server.
      * @return PIResponse|null null if response was empty or malformed, or parameter missing
      * @throws PIBadRequestException
      */
-    public function triggerChallenge($username)
+    public function triggerChallenge($username, $headers = null)
     {
         assert('string' === gettype($username));
 
         if ($username)
         {
             $authToken = $this->getAuthToken();
-            $header = array("authorization:" . $authToken);
+            $authTokenHeader = array("authorization:" . $authToken);
 
             $params = array("user" => $username);
 
@@ -124,7 +134,16 @@ class PrivacyIDEA
                 $params["realm"] = $this->realm;
             }
 
-            $response = $this->sendRequest($params, $header, 'POST', '/validate/triggerchallenge');
+            if (!empty($headers))
+            {
+                $head = array_merge($headers, $authTokenHeader);
+            }
+            else
+            {
+                $head = $authTokenHeader;
+            }
+
+            $response = $this->sendRequest($params, $head, 'POST', '/validate/triggerchallenge');
 
             return PIResponse::fromJSON($response, $this);
         }
@@ -139,17 +158,26 @@ class PrivacyIDEA
      * Poll for the status of a transaction (challenge).
      *
      * @param $transactionID string transactionId of the push challenge that was triggered before
+     * @param null $headers Optional headers array to forward to the server.
      * @return bool true if the Push request has been accepted, false otherwise.
      * @throws PIBadRequestException
      */
-    public function pollTransaction($transactionID)
+    public function pollTransaction($transactionID, $headers = null)
     {
         assert('string' === gettype($transactionID));
 
         if (!empty($transactionID))
         {
             $params = array("transaction_id" => $transactionID);
-            $responseJSON = $this->sendRequest($params, array(''), 'GET', '/validate/polltransaction');
+            if (!empty($headers))
+            {
+                $head = $headers;
+            }
+            else
+            {
+                $head = array('');
+            }
+            $responseJSON = $this->sendRequest($params, $head, 'GET', '/validate/polltransaction');
             $response = json_decode($responseJSON, true);
             return $response['result']['value'];
         }
@@ -167,10 +195,11 @@ class PrivacyIDEA
      * @param string $genkey
      * @param string $type
      * @param string $description
+     * @param null $headers Optional headers array to forward to the server.
      * @return mixed Object representing the response of the server or null if parameters are missing
      * @throws PIBadRequestException
      */
-    public function enrollToken($username, $genkey, $type, $description = "") // No return type because mixed not allowed yet
+    public function enrollToken($username, $genkey, $type, $description = "", $headers = null) // No return type because mixed not allowed yet
     {
         assert('string' === gettype($username));
         assert('string' === gettype($type));
@@ -196,10 +225,18 @@ class PrivacyIDEA
         $authToken = $this->getAuthToken();
 
         // If error occurred in getAuthToken() - return this error in PIResponse object
-        $header = array("authorization:" . $authToken);
+        $authTokenHeader = array("authorization:" . $authToken);
+        if (!empty($headers))
+        {
+            $head = array_merge($headers, $authTokenHeader);
+        }
+        else
+        {
+            $head = $authTokenHeader;
+        }
 
         // Check if user has token
-        $tokenInfo = json_decode($this->sendRequest(array("user" => $username, "realm" => $params["realm"]), $header, 'GET', '/token'));
+        $tokenInfo = json_decode($this->sendRequest(array("user" => $username, "realm" => $params["realm"]), $head, 'GET', '/token'));
 
         if (!empty($tokenInfo->result->value->tokens))
         {
@@ -209,7 +246,7 @@ class PrivacyIDEA
         else
         {
             // Call /token/init endpoint and return the response
-            return json_decode($this->sendRequest($params, $header, 'POST', '/token/init'));
+            return json_decode($this->sendRequest($params, $head, 'POST', '/token/init'));
         }
     }
 
@@ -220,10 +257,11 @@ class PrivacyIDEA
      * @param string $transactionID
      * @param string $webAuthnSignResponse
      * @param string $origin
+     * @param null $headers Optional headers array to forward to the server.
      * @return PIResponse|null returns null if the response was empty or malformed
      * @throws PIBadRequestException
      */
-    public function validateCheckWebAuthn($username, $transactionID, $webAuthnSignResponse, $origin)
+    public function validateCheckWebAuthn($username, $transactionID, $webAuthnSignResponse, $origin, $headers = null)
     {
         assert('string' === gettype($username));
         assert('string' === gettype($transactionID));
@@ -259,9 +297,17 @@ class PrivacyIDEA
                 $params[ASSERTIONCLIENTEXTENSIONS] = $tmp[ASSERTIONCLIENTEXTENSIONS];
             }
 
-            $header = array("Origin:" . $origin);
+            $originHeader = array("Origin:" . $origin);
+            if (!empty($headers))
+            {
+                $head = array_merge($headers, $originHeader);
+            }
+            else
+            {
+                $head = $originHeader;
+            }
 
-            $response = $this->sendRequest($params, $header, 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
 
             return PIResponse::fromJSON($response, $this);
         }
@@ -279,10 +325,11 @@ class PrivacyIDEA
      * @param string $username
      * @param string $transactionID
      * @param string $u2fSignResponse
+     * @param null $headers Optional headers array to forward to the server.
      * @return PIResponse|null
      * @throws PIBadRequestException
      */
-    public function validateCheckU2F($username, $transactionID, $u2fSignResponse)
+    public function validateCheckU2F($username, $transactionID, $u2fSignResponse, $headers = null)
     {
         assert('string' === gettype($username));
         assert('string' === gettype($transactionID));
@@ -301,12 +348,21 @@ class PrivacyIDEA
                 $params["realm"] = $this->realm;
             }
 
+            if (!empty($headers))
+            {
+                $head = $headers;
+            }
+            else
+            {
+                $head = array();
+            }
+
             // Additional U2F params from $u2fSignResponse
             $tmp = json_decode($u2fSignResponse, true);
             $params[CLIENTDATA] = $tmp["clientData"];
             $params[SIGNATUREDATA] = $tmp["signatureData"];
 
-            $response = $this->sendRequest($params, array(), 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
 
             return PIResponse::fromJSON($response, $this);
         }
