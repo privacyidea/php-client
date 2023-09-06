@@ -80,20 +80,16 @@ class PrivacyIDEA
                 // Add transaction ID in case of challenge response
                 $params["transaction_id"] = $transactionID;
             }
-            if (!empty($headers))
+            if (empty($headers))
             {
-                $head = $headers;
-            }
-            else
-            {
-                $head = array('');
+                $headers = array('');
             }
             if ($this->realm)
             {
                 $params["realm"] = $this->realm;
             }
 
-            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $headers, 'POST', '/validate/check');
 
             $ret = PIResponse::fromJSON($response, $this);
             if ($ret == null)
@@ -136,14 +132,14 @@ class PrivacyIDEA
 
             if (!empty($headers))
             {
-                $head = array_merge($headers, $authTokenHeader);
+                $headers = array_merge($headers, $authTokenHeader);
             }
             else
             {
-                $head = $authTokenHeader;
+                $headers = $authTokenHeader;
             }
 
-            $response = $this->sendRequest($params, $head, 'POST', '/validate/triggerchallenge');
+            $response = $this->sendRequest($params, $headers, 'POST', '/validate/triggerchallenge');
 
             return PIResponse::fromJSON($response, $this);
         }
@@ -169,15 +165,11 @@ class PrivacyIDEA
         if (!empty($transactionID))
         {
             $params = array("transaction_id" => $transactionID);
-            if (!empty($headers))
+            if (empty($headers))
             {
-                $head = $headers;
+                $headers = array('');
             }
-            else
-            {
-                $head = array('');
-            }
-            $responseJSON = $this->sendRequest($params, $head, 'GET', '/validate/polltransaction');
+            $responseJSON = $this->sendRequest($params, $headers, 'GET', '/validate/polltransaction');
             $response = json_decode($responseJSON, true);
             return $response['result']['value'];
         }
@@ -228,15 +220,15 @@ class PrivacyIDEA
         $authTokenHeader = array("authorization:" . $authToken);
         if (!empty($headers))
         {
-            $head = array_merge($headers, $authTokenHeader);
+            $headers = array_merge($headers, $authTokenHeader);
         }
         else
         {
-            $head = $authTokenHeader;
+            $headers = $authTokenHeader;
         }
 
         // Check if user has token
-        $tokenInfo = json_decode($this->sendRequest(array("user" => $username, "realm" => $params["realm"]), $head, 'GET', '/token'));
+        $tokenInfo = json_decode($this->sendRequest(array("user" => $username, "realm" => $params["realm"]), $headers, 'GET', '/token'));
 
         if (!empty($tokenInfo->result->value->tokens))
         {
@@ -246,7 +238,7 @@ class PrivacyIDEA
         else
         {
             // Call /token/init endpoint and return the response
-            return json_decode($this->sendRequest($params, $head, 'POST', '/token/init'));
+            return json_decode($this->sendRequest($params, $headers, 'POST', '/token/init'));
         }
     }
 
@@ -300,14 +292,14 @@ class PrivacyIDEA
             $originHeader = array("Origin:" . $origin);
             if (!empty($headers))
             {
-                $head = array_merge($headers, $originHeader);
+                $headers = array_merge($headers, $originHeader);
             }
             else
             {
-                $head = $originHeader;
+                $headers = $originHeader;
             }
 
-            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $headers, 'POST', '/validate/check');
 
             return PIResponse::fromJSON($response, $this);
         }
@@ -350,11 +342,7 @@ class PrivacyIDEA
 
             if (!empty($headers))
             {
-                $head = $headers;
-            }
-            else
-            {
-                $head = array();
+                $headers = array('');
             }
 
             // Additional U2F params from $u2fSignResponse
@@ -362,7 +350,7 @@ class PrivacyIDEA
             $params[CLIENTDATA] = $tmp["clientData"];
             $params[SIGNATUREDATA] = $tmp["signatureData"];
 
-            $response = $this->sendRequest($params, $head, 'POST', '/validate/check');
+            $response = $this->sendRequest($params, $headers, 'POST', '/validate/check');
 
             return PIResponse::fromJSON($response, $this);
         }
