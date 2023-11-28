@@ -422,6 +422,19 @@ class PrivacyIDEA
         assert('string' === gettype($httpMethod));
         assert('string' === gettype($endpoint));
 
+       /**
+       * Sending the "client" field allows us to use the original IP address in policies in Privacyidea.
+       */
+       $serverHeaders = $_SERVER;
+       foreach(array("X-Forwarded-For", "HTTP_X_FORWARDED_FOR", "REMOTE_ADDR") as $clientkey) {
+           if (array_key_exists($clientkey, $serverHeaders)) {
+               $client_ip = $serverHeaders[$clientkey];
+               $this->debugLog("Forwarding Client IP: " . $clientkey . ": " . $client_ip);
+               $params['client'] = $client_ip;
+               break;
+           }
+       }
+        
         $this->debugLog("Sending " . http_build_query($params, '', ', ') . " to " . $endpoint);
 
         $completeUrl = $this->serverURL . $endpoint;
