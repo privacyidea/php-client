@@ -42,6 +42,9 @@ class PrivacyIDEA
     /* @var string Realm for a service account to the privacyIDEA server. This is required to use the /validate/triggerchallenge endpoint. This is optional. */
     public $serviceAccountRealm = "";
 
+    /* @var bool Send the "client" parameter to allow using the original IP address in the privacyIDEA policies. */
+    public $forwardClientIP = false;
+
     /* @var object Implementation of the PILog interface. */
     public $logger = null;
 
@@ -422,18 +425,21 @@ class PrivacyIDEA
         assert('string' === gettype($httpMethod));
         assert('string' === gettype($endpoint));
 
-       /**
-       * Sending the "client" field allows us to use the original IP address in policies in Privacyidea.
-       */
-       $serverHeaders = $_SERVER;
-       foreach(array("X-Forwarded-For", "HTTP_X_FORWARDED_FOR", "REMOTE_ADDR") as $clientkey) {
-           if (array_key_exists($clientkey, $serverHeaders)) {
-               $client_ip = $serverHeaders[$clientkey];
-               $this->debugLog("Forwarding Client IP: " . $clientkey . ": " . $client_ip);
-               $params['client'] = $client_ip;
-               break;
-           }
-       }
+        // Add the client parameter if wished.
+        if ($this->forwardClientIP === true)
+        {
+            $serverHeaders = $_SERVER;
+            foreach (array("X-Forwarded-For", "HTTP_X_FORWARDED_FOR", "REMOTE_ADDR") as $clientKey)
+            {
+                if (array_key_exists($clientKey, $serverHeaders))
+                {
+                    $clientIP = $serverHeaders[$clientKey];
+                    $this->debugLog("Forwarding Client IP: " . $clientKey . ": " . $clientIP);
+                    $params['client'] = $clientIP;
+                    break;
+                }
+            }
+        }
         
         $this->debugLog("Sending " . http_build_query($params, '', ', ') . " to " . $endpoint);
 
