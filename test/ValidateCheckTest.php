@@ -32,6 +32,7 @@ class ValidateCheckTest extends TestCase implements PILog
         $this->pi->logger = $this;
         $this->pi->sslVerifyHost = false;
         $this->pi->sslVerifyPeer = false;
+        $this->pi->forwardClientIP = true;
         $this->pi->realm = "testRealm";
     }
 
