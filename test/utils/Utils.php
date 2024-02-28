@@ -18,7 +18,7 @@ class Utils
     /**
      * @return string
      */
-    public static function authToken()
+    public static function authToken(): string
     {
         return "eyJ0eXAiOiJKV1Qi...NoBVmAurqcaaMAsD1S6chGIM";
     }
@@ -26,7 +26,7 @@ class Utils
     /**
      * @return string
      */
-    public static function u2fSignRequest()
+    public static function u2fSignRequest(): string
     {
         return "{\"appId\":\"https:\/\/ttype.u2f\"," .
             "\"challenge\":\"TZKiB0VFFMFsnlz00lF5iCqtQduDJf56AeJAY_BT4NU\"," .
@@ -37,7 +37,7 @@ class Utils
     /**
      * @return string
      */
-    public static function u2fSignResponse()
+    public static function u2fSignResponse(): string
     {
         return "{\"clientData\":\"eyJjaGFsbGVuZ2UiOiJpY2UBc3NlcnRpb24ifQ\"," . "\"errorCode\":0," .
             "\"keyHandle\":\"UUHmZ4BUFCrt7q88MhlQkjlZqzZW1lC-jDdFd2pKDUsNnA\"," .
@@ -47,7 +47,7 @@ class Utils
     /**
      * @return string
      */
-    public static function webauthnSignRequest()
+    public static function webauthnSignRequest(): string
     {
         return "{\n" . "            \"allowCredentials\": [\n" . "              {\n" .
             "                \"id\": \"83De8z_CNqogB6aCyKs6dWIqwpOpzVoNaJ74lgcpuYN7l-95QsD3z-qqPADqsFlPwBXCMqEPssq75kqHCMQHDA\",\n" .
@@ -65,7 +65,7 @@ class Utils
     /**
      * @return string
      */
-    public static function webauthnSignResponse()
+    public static function webauthnSignResponse(): string
     {
         return "{" . "\"credentialid\":\"X9FrwMfmzj...saw21\"," .
             "\"authenticatordata\":\"xGzvgq0bVGR3WR0A...ZJdA7cBAAAACA\"," .
@@ -78,7 +78,7 @@ class Utils
     /**
      * @return string
      */
-    public static function imageData()
+    public static function imageData(): string
     {
         return "data:image/png;base64,iVBdgfgsdfgRK5CYII=";
     }
@@ -86,7 +86,7 @@ class Utils
     /**
      * @return string
      */
-    public static function matchingOneTokenResponseBody()
+    public static function matchingOneTokenResponseBody(): string
     {
         return "{\n" . "  \"detail\": {\n" . "    \"message\": \"matching 1 tokens\",\n" . "    \"otplen\": 6,\n" .
             "    \"serial\": \"PISP0001C673\",\n" . "    \"threadid\": 140536383567616,\n" .
@@ -99,7 +99,7 @@ class Utils
     /**
      * @return string
      */
-    public static function postAuthResponseBody()
+    public static function postAuthResponseBody(): string
     {
         return "{\n" . "    \"id\": 1,\n" . "    \"jsonrpc\": \"2.0\",\n" .
             "    \"result\": {\n" . "        \"status\": true,\n" .
@@ -124,7 +124,7 @@ class Utils
     /**
      * @return string
      */
-    public static function tokenInitResponseBody()
+    public static function tokenInitResponseBody(): string
     {
         return "{\n" . "    \"detail\": {\n" . "        \"googleurl\": {\n" .
             "            \"description\": \"URL for google Authenticator\",\n" .
@@ -154,7 +154,7 @@ class Utils
     /**
      * @return string
      */
-    public static function getTokenResponseBody()
+    public static function getTokenResponseBody(): string
     {
         return "{\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"status\":true," . "\"value\":{" .
             "\"count\":1," . "\"current\":1," . "\"tokens\":[{" . "\"active\":true," . "\"count\":2," .
@@ -173,7 +173,7 @@ class Utils
     /**
      * @return string
      */
-    public static function triggerPushTokenResponseBody()
+    public static function triggerPushTokenResponseBody(): string
     {
         return "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"poll\"," . "    \"attributes\": null,\n" .
             "    \"message\": \"Bitte geben Sie einen OTP-Wert ein: , Please confirm the authentication on your mobile device!\",\n" .
@@ -200,7 +200,7 @@ class Utils
     /**
      * @return string
      */
-    public static function pollingResponseBody()
+    public static function pollingResponseBody(): string
     {
         return '{
                 "id": 1,
@@ -218,7 +218,7 @@ class Utils
     /**
      * @return string
      */
-    public static function tcSuccessResponseBody()
+    public static function tcSuccessResponseBody(): string
     {
         return "{\"detail\":{" . "\"preferred_client_mode\":\"interactive\"," .
             "\"image\": \"" . self::imageData() . "\",\n" .
@@ -238,7 +238,7 @@ class Utils
     /**
      * @return string
      */
-    public static function errorUserNotFoundResponseBody()
+    public static function errorUserNotFoundResponseBody(): string
     {
         return "{" . "\"detail\":null," . "\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"error\":{" .
             "\"code\":904," . "\"message\":\"ERR904: The user can not be found in any resolver in this realm!\"}," .
@@ -249,7 +249,7 @@ class Utils
     /**
      * @return string
      */
-    public static function triggerU2FResponseBody()
+    public static function triggerU2FResponseBody(): string
     {
         return "{" . "\"detail\":{" . "\"preferred_client_mode\":\"u2f\"," . "\"attributes\":{" . "\"hideResponseInput\":true," .
             "\"image\":\"" . self::imageData() . "\"," . "\"u2fSignRequest\":{" .
@@ -275,7 +275,7 @@ class Utils
     /**
      * @return string
      */
-    public static function triggerWebauthnResponseBody()
+    public static function triggerWebauthnResponseBody(): string
     {
         return "{\n" . "  \"detail\": {\n" . "\"preferred_client_mode\":\"webauthn\"," . "    \"attributes\": {\n" . "      \"hideResponseInput\": true,\n" .
             "      \"image\": \"" . self::imageData() . "\",\n" .
