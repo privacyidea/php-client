@@ -30,34 +30,34 @@ const ASSERTIONCLIENTEXTENSIONS = "assertionclientextensions";
 class PrivacyIDEA
 {
     /* @var string User agent name which should be forwarded to the privacyIDEA server. */
-    public string $userAgent = "";
+    private string $userAgent;
 
     /* @var string URL of the privacyIDEA server. */
-    public string $serverURL = "";
+    private string $serverURL;
 
     /* @var string User's realm. */
-    public string $realm = "";
+    private string $realm = "";
 
     /* @var bool Disable host verification for SSL. */
-    public bool $sslVerifyHost = true;
+    private bool $sslVerifyHost = true;
 
     /* @var bool Disable peer verification for SSL. */
-    public bool $sslVerifyPeer = true;
+    private bool $sslVerifyPeer = true;
 
     /* @var string Account name for privacyIDEA service account. Required to use the /validate/triggerchallenge endpoint. */
-    public string $serviceAccountName = "";
+    private string $serviceAccountName = "";
 
     /* @var string Password for privacyIDEA service account. Required to use the /validate/triggerchallenge endpoint. */
-    public string $serviceAccountPass = "";
+    private string $serviceAccountPass = "";
 
     /* @var string Realm for privacyIDEA service account. Optional to use the /validate/triggerchallenge endpoint. */
-    public string $serviceAccountRealm = "";
+    private string $serviceAccountRealm = "";
 
     /* @var bool Send the "client" parameter to allow using the original IP address in the privacyIDEA policies. */
-    public bool $forwardClientIP = false;
+    private bool $forwardClientIP = false;
 
     /* @var object|null Implementation of the PILog interface. */
-    public ?object $logger = null;
+    private ?object $logger = null;
 
     /**
      * PrivacyIDEA constructor.
@@ -373,7 +373,7 @@ class PrivacyIDEA
         assert('array' === gettype($headers));
         assert('string' === gettype($httpMethod));
         assert('string' === gettype($endpoint));
-        
+
         // Add the client parameter if wished.
         if ($this->forwardClientIP === true)
         {
@@ -491,5 +491,79 @@ class PrivacyIDEA
     function errorLog(string $message): void
     {
         $this->logger?->piError("privacyIDEA-PHP-Client: " . $message);
+    }
+
+    // Setters
+
+    /**
+     * @param string $realm User's realm.
+     * @return void
+     */
+    public function setRealm(string $realm): void
+    {
+        $this->realm = $realm;
+    }
+
+    /**
+     * @param bool $sslVerifyHost Disable host verification for SSL.
+     * @return void
+     */
+    public function setSSLVerifyHost(bool $sslVerifyHost): void
+    {
+        $this->sslVerifyHost = $sslVerifyHost;
+    }
+
+    /**
+     * @param bool $sslVerifyPeer Disable peer verification for SSL.
+     * @return void
+     */
+    public function setSSLVerifyPeer(bool $sslVerifyPeer): void
+    {
+        $this->sslVerifyPeer = $sslVerifyPeer;
+    }
+
+    /**
+     * @param string $serviceAccountName Account name for privacyIDEA service account. Required to use the /validate/triggerchallenge endpoint.
+     * @return void
+     */
+    public function setServiceAccountName(string $serviceAccountName): void
+    {
+        $this->serviceAccountName = $serviceAccountName;
+    }
+
+    /**
+     * @param string $serviceAccountPass Password for privacyIDEA service account. Required to use the /validate/triggerchallenge endpoint.
+     * @return void
+     */
+    public function setServiceAccountPass(string $serviceAccountPass): void
+    {
+        $this->serviceAccountPass = $serviceAccountPass;
+    }
+
+    /**
+     * @param string $serviceAccountRealm Realm for privacyIDEA service account. Optional to use the /validate/triggerchallenge endpoint.
+     * @return void
+     */
+    public function setServiceAccountRealm(string $serviceAccountRealm): void
+    {
+        $this->serviceAccountRealm = $serviceAccountRealm;
+    }
+
+    /**
+     * @param bool $forwardClientIP Send the "client" parameter to allow using the original IP address in the privacyIDEA policies.
+     * @return void
+     */
+    public function setForwardClientIP(bool $forwardClientIP): void
+    {
+        $this->forwardClientIP = $forwardClientIP;
+    }
+
+    /**
+     * @param object|null $logger Implementation of the PILog interface.
+     * @return void
+     */
+    public function setLogger(?object $logger): void
+    {
+        $this->logger = $logger;
     }
 }
