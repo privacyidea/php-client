@@ -17,40 +17,40 @@
 class PIResponse
 {
     /* @var string Combined messages of all triggered token. */
-    public string $messages = "";
+    private string $messages = "";
 
     /* @var string Message from the response. Should be shown to the user. */
-    public string $message = "";
+    private string $message = "";
 
     /* @var string Transaction ID is used to reference the challenges contained in this response in later requests. */
-    public string $transactionID = "";
+    private string $transactionID = "";
 
     /* @var string Preferred mode in which client should work after triggering challenges. */
-    public string $preferredClientMode = "";
+    private string $preferredClientMode = "";
 
     /* @var string Raw response in JSON format. */
-    public string $raw = "";
+    private string $raw = "";
 
     /* @var array Array of PIChallenge objects representing the triggered token challenges. */
-    public array $multiChallenge = array();
+    private array $multiChallenge = array();
 
     /* @var bool Status indicates if the request was processed successfully by the server. */
-    public bool $status = false;
+    private bool $status = false;
 
     /* @var bool Value is true if the authentication was successful. */
-    public bool $value = false;
+    private bool $value = false;
 
     /* @var string Authentication Status. */
-    public string $authenticationStatus = "";
+    private string $authenticationStatus = "";
 
     /* @var array Additional attributes of the user that can be sent by the server. */
-    public array $detailAndAttributes = array();
+    private array $detailAndAttributes = array();
 
     /* @var string If an error occurred, the error code will be set here. */
-    public string $errorCode;
+    private string $errorCode;
 
     /* @var string If an error occurred, the error message will be set here. */
-    public string $errorMessage;
+    private string $errorMessage;
 
     /**
      * Create a PIResponse object from the JSON response of the server.
@@ -321,5 +321,103 @@ class PIResponse
             }
         }
         return "";
+    }
+
+    // Getters
+
+    /**
+     * @return string Combined messages of all triggered token.
+     */
+    public function getMessages(): string
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @return string Message from the response. Should be shown to the user.
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return string Transaction ID is used to reference the challenges contained in this response in later requests.
+     */
+    public function getTransactionID(): string
+    {
+        return $this->transactionID;
+    }
+
+    /**
+     * @return string Preferred mode in which client should work after triggering challenges.
+     */
+    public function getPreferredClientMode(): string
+    {
+        return $this->preferredClientMode;
+    }
+
+    /**
+     * @return string Raw response in JSON format.
+     */
+    public function getRawResponse(): string
+    {
+        return $this->raw;
+    }
+
+    /**
+     * @return array Array of PIChallenge objects representing the triggered token challenges.
+     */
+    public function getMultiChallenge(): array
+    {
+        return $this->multiChallenge;
+    }
+
+    /**
+     * @return bool Status indicates if the request was processed successfully by the server.
+     */
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return bool Value is true if the authentication was successful.
+     */
+    public function getValue(): bool
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string Authentication Status.
+     */
+    public function getAuthenticationStatus(): string
+    {
+        return $this->authenticationStatus;
+    }
+
+    /**
+     * @return array Additional attributes of the user that can be sent by the server.
+     */
+    public function getDetailAndAttributes(): array
+    {
+        return $this->detailAndAttributes;
+    }
+
+    /**
+     * @return string If an error occurred, the error code will be set here.
+     */
+    public function getErrorCode(): string
+    {
+        return $this->errorCode;
+    }
+
+    /**
+     * @return string If an error occurred, the error message will be set here.
+     */
+    public function getErrorMessage(): string
+    {
+        return $this->errorMessage;
     }
 }
