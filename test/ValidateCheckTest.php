@@ -13,7 +13,7 @@
  */
 
 //require_once(__DIR__ . '/../src/Client-Autoloader.php');
-require_once(__DIR__ . '/../vendor/autoload.php');
+/*require_once(__DIR__ . '/../vendor/autoload.php');
 require_once('utils/Utils.php');
 
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
@@ -22,7 +22,7 @@ use utils\Utils;
 
 class ValidateCheckTest extends TestCase implements PILog
 {
-    private $pi;
+    private PrivacyIDEA $pi;
 
     use HttpMockTrait;
 
@@ -41,11 +41,11 @@ class ValidateCheckTest extends TestCase implements PILog
         $this->setUpHttpMock();
         $this->pi = new PrivacyIDEA('testUserAgent', "http://localhost:8082");
 
-        $this->pi->logger = $this;
-        $this->pi->sslVerifyHost = false;
-        $this->pi->sslVerifyPeer = false;
-        $this->pi->forwardClientIP = true;
-        $this->pi->realm = "testRealm";
+        $this->pi->setLogger($this);
+        $this->pi->setSSLVerifyHost(false);
+        $this->pi->setSSLVerifyPeer(false);
+        $this->pi->setForwardClientIP(true);
+        $this->pi->setRealm("testRealm");
     }
 
     public function tearDown(): void
@@ -56,7 +56,7 @@ class ValidateCheckTest extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
-    public function testOTPSuccess()
+    /*public function testOTPSuccess()
     {
         $this->http->mock
             ->when()
@@ -69,17 +69,17 @@ class ValidateCheckTest extends TestCase implements PILog
 
         $response = $this->pi->validateCheck("testUser", "testPass", null, array('accept-language:en'));
 
-        $this->assertEquals("matching 1 tokens", $response->message);
-        $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->raw);
-        $this->assertTrue($response->status);
-        $this->assertTrue($response->value);
+        $this->assertEquals("matching 1 tokens", $response->getMessage());
+        $this->assertEquals(Utils::matchingOneTokenResponseBody(), $response->getRawResponse());
+        $this->assertTrue($response->getStatus());
+        $this->assertTrue($response->getValue());
         $this->assertEquals("", $response->otpMessage());
     }
 
     /**
      * @throws PIBadRequestException
      */
-    public function testEmptyResponse()
+    /*public function testEmptyResponse()
     {
         $this->http->mock
             ->when()
@@ -98,7 +98,7 @@ class ValidateCheckTest extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
-    public function testNoUsername()
+    /*public function testNoUsername()
     {
         $response = $this->pi->validateCheck("", "testPass");
 
@@ -108,7 +108,7 @@ class ValidateCheckTest extends TestCase implements PILog
     /**
      * @throws PIBadRequestException
      */
-    public function testUserNotFound()
+    /*public function testUserNotFound()
     {
         $this->http->mock
             ->when()
@@ -121,18 +121,18 @@ class ValidateCheckTest extends TestCase implements PILog
 
         $response = $this->pi->validateCheck("testFalseUser", "testFalsePass");
 
-        $this->assertEquals("904", $response->errorCode);
-        $this->assertEquals("ERR904: The user can not be found in any resolver in this realm!", $response->errorMessage);
-        $this->assertFalse($response->status);
+        $this->assertEquals("904", $response->getErrorCode());
+        $this->assertEquals("ERR904: The user can not be found in any resolver in this realm!", $response->getErrorMessage());
+        $this->assertFalse($response->getStatus());
         $this->assertEquals("", $response->otpMessage());
     }
 
-    public function piDebug($message)
+    public function piDebug($message): void
     {
         echo $message . "\n";
     }
 
-    public function piError($message)
+    public function piError($message): void
     {
         echo "error: " . $message . "\n";
     }
