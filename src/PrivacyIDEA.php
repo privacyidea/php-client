@@ -423,7 +423,7 @@ class PrivacyIDEA
      * @param string $needle Search string.
      * @return mixed Result of key search.
      */
-    public function findRecursive(array $haystack, string $needle)
+    public function findRecursive($haystack, $needle)
     {
         assert(is_array($haystack));
         assert(is_string($needle));
