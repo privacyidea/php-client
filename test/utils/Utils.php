@@ -112,6 +112,31 @@ class Utils
     /**
      * @return string
      */
+    public static function postAuthNoRoleAdminResponseBody()
+    {
+        return "{\n" . "    \"id\": 1,\n" . "    \"jsonrpc\": \"2.0\",\n" .
+            "    \"result\": {\n" . "        \"status\": true,\n" .
+            "        \"value\": {\n" . "            \"log_level\": 20,\n" .
+            "            \"menus\": [\n" . "                \"components\",\n" .
+            "                \"machines\"\n" . "            ],\n" .
+            "            \"realm\": \"\",\n" . "            \"rights\": [\n" .
+            "                \"policydelete\",\n" .
+            "                \"resync\"\n" . "            ],\n" .
+            "            \"role\": \"user\",\n" . "            \"token\": \"" .
+            self::authToken() . "\",\n" . "            \"username\": \"admin\",\n" .
+            "            \"logout_time\": 120,\n" .
+            "            \"default_tokentype\": \"hotp\",\n" .
+            "            \"user_details\": false,\n" .
+            "            \"subscription_status\": 0\n" . "        }\n" .
+            "    },\n" . "    \"time\": 1589446794.8502703,\n" .
+            "    \"version\": \"privacyIDEA 3.2.1\",\n" .
+            "    \"versionnumber\": \"3.2.1\",\n" .
+            "    \"signature\": \"rsa_sha256_pss:\"\n" . "}";
+    }
+
+    /**
+     * @return string
+     */
     public static function tokenInitResponseBody()
     {
         return "{\n" . "    \"detail\": {\n" . "        \"googleurl\": {\n" .
@@ -230,6 +255,17 @@ class Utils
     {
         return "{" . "\"detail\":null," . "\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"error\":{" .
             "\"code\":904," . "\"message\":\"ERR904: The user can not be found in any resolver in this realm!\"}," .
+            "\"status\":false}," . "\"time\":1649752303.65651," . "\"version\":\"privacyIDEA 3.6.3\"," .
+            "\"signature\":\"rsa_sha256_pss:1c64db29cad0dc127d6...5ec143ee52a7804ea1dc8e23ab2fc90ac0ac147c0\"}";
+    }
+
+    /**
+     * @return string
+     */
+    public static function errorMissingAuthorizationHeaderResponseBody()
+    {
+        return "{" . "\"detail\":null," . "\"id\":1," . "\"jsonrpc\":\"2.0\"," . "\"result\":{" . "\"error\":{" .
+            "\"code\":4033," . "\"message\":\"Authentication failure. Missing Authorization header.\"}," .
             "\"status\":false}," . "\"time\":1649752303.65651," . "\"version\":\"privacyIDEA 3.6.3\"," .
             "\"signature\":\"rsa_sha256_pss:1c64db29cad0dc127d6...5ec143ee52a7804ea1dc8e23ab2fc90ac0ac147c0\"}";
     }
