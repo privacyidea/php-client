@@ -336,6 +336,7 @@ class PrivacyIDEA
             return "";
         }
 
+
         $params = array(
             "username" => $this->serviceAccountName,
             "password" => $this->serviceAccountPass
@@ -350,11 +351,46 @@ class PrivacyIDEA
 
         if (!empty($response['result']['value']))
         {
-            return @$response['result']['value']['token'] ?: "";
+            // Ensure an admin account
+            if (!empty($response['result']['value']["token"]))
+            {
+                if ($this->findRecursive($response, "role") != 'admin')
+                {
+                    $this->debugLog("Auth token was of a user without admin role.");
+                    return "";
+                }
+                return $response['result']['value']["token"];
+            }
         }
 
         $this->debugLog("/auth response did not contain the auth token.");
         return "";
+    }
+
+    /**
+     * Find key recursively in array.
+     *
+     * @param array $haystack The array which will be searched.
+     * @param string $needle Search string.
+     * @return mixed Result of key search.
+     */
+    public function findRecursive(array $haystack, string $needle): mixed
+    {
+        assert(is_array($haystack));
+        assert(is_string($needle));
+
+        $iterator = new RecursiveArrayIterator($haystack);
+        $recursive = new RecursiveIteratorIterator(
+            $iterator,
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($recursive as $key => $value) {
+            if ($key === $needle) {
+                return $value;
+            }
+        }
+        return false;
     }
 
     /**
