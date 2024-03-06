@@ -352,14 +352,14 @@ class PrivacyIDEA
         if (!empty($response['result']['value']))
         {
             // Ensure an admin account
-            if (!empty($response['result']['value']["token"]))
+            if (!empty($response['result']['value']['token']))
             {
-                if ($this->findRecursive($response, "role") != 'admin')
+                if ($this->findRecursive($response, 'role') != 'admin')
                 {
                     $this->debugLog("Auth token was of a user without admin role.");
                     return "";
                 }
-                return $response['result']['value']["token"];
+                return $response['result']['value']['token'];
             }
         }
 
@@ -385,8 +385,10 @@ class PrivacyIDEA
             RecursiveIteratorIterator::SELF_FIRST
         );
 
-        foreach ($recursive as $key => $value) {
-            if ($key === $needle) {
+        foreach ($recursive as $key => $value)
+        {
+            if ($key === $needle)
+            {
                 return $value;
             }
         }
