@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 class PIBadRequestException extends Exception
 {
 }

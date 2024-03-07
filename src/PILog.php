@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 /**
  * Logging interface. This is used to relay the log
  * messages of the PHP-Client to the logger

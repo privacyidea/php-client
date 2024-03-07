@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 const AUTHENTICATORDATA = "authenticatordata";
 const CLIENTDATA = "clientdata";
 const SIGNATUREDATA = "signaturedata";

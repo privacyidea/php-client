@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 class PIChallenge
 {
     /* @var string Type of token this challenge is for. */

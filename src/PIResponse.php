@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 class PIResponse
 {
     /* @var string Combined messages of all triggered token. */

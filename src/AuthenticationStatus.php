@@ -12,8 +12,6 @@
  * limitations under the License.
  */
 
-//namespace PrivacyIDEA\PHPClient;
-
 abstract class AuthenticationStatus
 {
     const CHALLENGE = "CHALLENGE";
