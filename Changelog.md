@@ -2,6 +2,7 @@
 * Added an optional client parameter to forward the client IP with the server requests (#17)
 * Code updated to support PHP8 (#46)
 * Tests will be temporarily disabled until modernization of http-mock is complete (#46)
+* PrivacyIDEA and PIResponse classes made private (#51)
 
 ### v1.0.0
 * Added a possibility to enroll a new token via challenge (#23)
