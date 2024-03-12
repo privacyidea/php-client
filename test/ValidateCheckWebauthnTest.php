@@ -12,7 +12,6 @@
  * limitations under the License.
  */
 
-//require_once(__DIR__ . '/../src/Client-Autoloader.php');
 /*require_once(__DIR__ . '/../vendor/autoload.php');
 require_once('utils/Utils.php');
 
@@ -126,4 +125,4 @@ class ValidateCheckWebauthnTest extends TestCase implements PILog
     {
         echo "error: " . $message . "\n";
     }
-}
+}*/
