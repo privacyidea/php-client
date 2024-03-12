@@ -1,33 +1,43 @@
 <?php
-
-//namespace PrivacyIdea\PHPClient;
+/*
+ * Copyright 2024 NetKnights GmbH - lukas.matusiewicz@netknights.it
+ * <p>
+ * Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3;
+ * you may not use this file except in compliance with the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 class PIChallenge
 {
-    /* @var string Type of the token this challenge is for. */
-    public $type = "";
+    /* @var string Type of token this challenge is for. */
+    public string $type = "";
 
-    /* @var string Message for this challenge. */
-    public $message = "";
+    /* @var string Message extracted from this challenge. */
+    public string $message = "";
 
-    /* @var string Image data for this challenge. */
-    public $image = "";
+    /* @var string Image data extracted from this challenge. */
+    public string $image = "";
 
     /* @var string TransactionId to reference this challenge in later requests. */
-    public $transactionID = "";
+    public string $transactionID = "";
 
     /* @var string Client mode in which the challenge should be processed. */
-    public $clientMode = "";
+    public string $clientMode = "";
 
-    /* @var string Serial of the token this challenge is for. */
-    public $serial = "";
+    /* @var string Serial of token this challenge is for. */
+    public string $serial = "";
 
     /* @var string Arbitrary attributes that can be appended to the challenge by the server. */
-    public $attributes = "";
+    public string $attributes = "";
 
-    /* @var string JSON format */
-    public $webAuthnSignRequest = "";
+    /* @var string WebAuthn sign request in JSON format */
+    public string $webAuthnSignRequest = "";
 
-    /* @var string JSON format */
-    public $u2fSignRequest = "";
+    /* @var string U2F sign request in JSON format */
+    public string $u2fSignRequest = "";
 }

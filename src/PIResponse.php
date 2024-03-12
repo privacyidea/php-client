@@ -1,74 +1,79 @@
 <?php
-
-//namespace PrivacyIdea\PHPClient;
+/*
+ * Copyright 2024 NetKnights GmbH - lukas.matusiewicz@netknights.it
+ * <p>
+ * Licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3;
+ * you may not use this file except in compliance with the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 class PIResponse
 {
     /* @var string Combined messages of all triggered token. */
-    public $messages = "";
+    private string $messages = "";
 
     /* @var string Message from the response. Should be shown to the user. */
-    public $message = "";
+    private string $message = "";
 
-    /* @var string TransactionID is used to reference the challenges contained in this response in later requests. */
-    public $transactionID = "";
-
-    /* @var string QR Code to enroll a new token. */
-    public $image = "";
+    /* @var string Transaction ID is used to reference the challenges contained in this response in later requests. */
+    private string $transactionID = "";
 
     /* @var string Preferred mode in which client should work after triggering challenges. */
-    public $preferredClientMode = "";
+    private string $preferredClientMode = "";
 
     /* @var string Raw response in JSON format. */
-    public $raw = "";
+    private string $raw = "";
 
-    /* @var array Array of PIChallenge objects representing triggered token challenges. */
-    public $multiChallenge = array();
+    /* @var array Array of PIChallenge objects representing the triggered token challenges. */
+    private array $multiChallenge = array();
 
     /* @var bool Status indicates if the request was processed successfully by the server. */
-    public $status = false;
+    private bool $status = false;
 
     /* @var bool Value is true if the authentication was successful. */
-    public $value = false;
+    private bool $value = false;
 
-    /* @var string Authentication Status */
-    public $authenticationStatus = "";
+    /* @var string Authentication Status. */
+    private string $authenticationStatus = "";
 
     /* @var array Additional attributes of the user that can be sent by the server. */
-    public $detailAndAttributes = array();
+    private array $detailAndAttributes = array();
 
-    /* @var string If an error occurred, the error code will be set. */
-    public $errorCode;
+    /* @var string If an error occurred, the error code will be set here. */
+    private string $errorCode;
 
-    /* @var string If an error occurred, the error message will be set. */
-    public $errorMessage;
+    /* @var string If an error occurred, the error message will be set here. */
+    private string $errorMessage;
 
     /**
-     * Create a PIResponse object from the json response of the server.
+     * Create a PIResponse object from the JSON response of the server.
      *
-     * @param $json
-     * @param PrivacyIDEA $privacyIDEA
-     * @return PIResponse|null returns null if the response of the server is empty or malformed
+     * @param string $json Server response in JSON format.
+     * @param PrivacyIDEA $privacyIDEA PrivacyIDEA object.
+     * @return PIResponse|null Returns the PIResponse object or null if the response of the server is empty or malformed.
      */
-    public static function fromJSON($json, PrivacyIDEA $privacyIDEA)
+    public static function fromJSON(string $json, PrivacyIDEA $privacyIDEA): ?PIResponse
     {
         assert('string' === gettype($json));
 
         if ($json == null || $json == "")
         {
-            $privacyIDEA->errorLog("Response from server is empty.");
+            $privacyIDEA->errorLog("Response from the server is empty.");
             return null;
         }
 
         $ret = new PIResponse();
         $map = json_decode($json, true);
-
         if ($map == null)
         {
             $privacyIDEA->errorLog("Response from the server is malformed:\n" . $json);
             return null;
         }
-
         $ret->raw = $json;
 
         // If value is not present, an error occurred
@@ -91,10 +96,6 @@ class PIResponse
         {
             $ret->transactionID = $map['detail']['transaction_id'];
         }
-        if (isset($map['detail']['image']))
-        {
-            $ret->image = $map['detail']['image'];
-        }
         if (isset($map['detail']['preferred_client_mode']))
         {
             $pref = $map['detail']['preferred_client_mode'];
@@ -112,7 +113,7 @@ class PIResponse
             }
         }
 
-        // Check that the authentication status is one of the allowed ones
+        // Check if the authentication status is legit
         $r = null;
         if (!empty($map['result']['authentication']))
         {
@@ -132,7 +133,7 @@ class PIResponse
         }
         else
         {
-            $privacyIDEA->debugLog("Unknown authentication status");
+            $privacyIDEA->debugLog("Unknown authentication status.");
             $ret->authenticationStatus = AuthenticationStatus::NONE;
         }
         $ret->status = $map['result']['status'] ?: false;
@@ -197,7 +198,7 @@ class PIResponse
      * Get an array with all triggered token types.
      * @return array
      */
-    public function triggeredTokenTypes()
+    public function triggeredTokenTypes(): array
     {
         $ret = array();
         foreach ($this->multiChallenge as $challenge)
@@ -208,10 +209,10 @@ class PIResponse
     }
 
     /**
-     * Get the message of any token that is not Push or WebAuthn. Those are OTP token requiring an input field.
+     * Get the message of any token that is not Push or WebAuthn. Those are OTP tokens requiring an input field.
      * @return string
      */
-    public function otpMessage()
+    public function otpMessage(): string
     {
         foreach ($this->multiChallenge as $challenge)
         {
@@ -227,7 +228,7 @@ class PIResponse
      * Get the Push token message if any were triggered.
      * @return string
      */
-    public function pushMessage()
+    public function pushMessage(): string
     {
         foreach ($this->multiChallenge as $challenge)
         {
@@ -243,7 +244,7 @@ class PIResponse
      * Get the WebAuthn token message if any were triggered.
      * @return string
      */
-    public function webauthnMessage()
+    public function webauthnMessage(): string
     {
         foreach ($this->multiChallenge as $challenge)
         {
@@ -256,10 +257,10 @@ class PIResponse
     }
 
     /**
-     * Get the WebAuthnSignRequest for any triggered WebAuthn token. If none were triggered, this returns an empty string.
-     * @return string WebAuthnSignRequest or empty string
+     * Get the WebAuthnSignRequest for any triggered WebAuthn token.
+     * @return string WebAuthnSignRequest or empty string if no WebAuthn token was triggered.
      */
-    public function webAuthnSignRequest()
+    public function webAuthnSignRequest(): string
     {
         $arr = [];
         $webauthn = "";
@@ -287,10 +288,10 @@ class PIResponse
     }
 
     /**
-     * Get the U2FSignRequest for any triggered U2F token. If none were triggered, this returns an empty string.
-     * @return string U2FSignRequest or empty string
+     * Get the U2FSignRequest for any triggered U2F token.
+     * @return string U2FSignRequest or empty string if no U2F token was triggered.
      */
-    public function u2fSignRequest()
+    public function u2fSignRequest(): string
     {
         $ret = "";
         foreach ($this->multiChallenge as $challenge)
@@ -308,7 +309,7 @@ class PIResponse
      * Get the WebAuthn token message if any were triggered.
      * @return string
      */
-    public function u2fMessage()
+    public function u2fMessage(): string
     {
         foreach ($this->multiChallenge as $challenge)
         {
@@ -318,5 +319,103 @@ class PIResponse
             }
         }
         return "";
+    }
+
+    // Getters
+
+    /**
+     * @return string Combined messages of all triggered token.
+     */
+    public function getMessages(): string
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @return string Message from the response. Should be shown to the user.
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return string Transaction ID is used to reference the challenges contained in this response in later requests.
+     */
+    public function getTransactionID(): string
+    {
+        return $this->transactionID;
+    }
+
+    /**
+     * @return string Preferred mode in which client should work after triggering challenges.
+     */
+    public function getPreferredClientMode(): string
+    {
+        return $this->preferredClientMode;
+    }
+
+    /**
+     * @return string Raw response in JSON format.
+     */
+    public function getRawResponse(): string
+    {
+        return $this->raw;
+    }
+
+    /**
+     * @return array Array of PIChallenge objects representing the triggered token challenges.
+     */
+    public function getMultiChallenge(): array
+    {
+        return $this->multiChallenge;
+    }
+
+    /**
+     * @return bool Status indicates if the request was processed successfully by the server.
+     */
+    public function getStatus(): bool
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return bool Value is true if the authentication was successful.
+     */
+    public function getValue(): bool
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string Authentication Status.
+     */
+    public function getAuthenticationStatus(): string
+    {
+        return $this->authenticationStatus;
+    }
+
+    /**
+     * @return array Additional attributes of the user that can be sent by the server.
+     */
+    public function getDetailAndAttributes(): array
+    {
+        return $this->detailAndAttributes;
+    }
+
+    /**
+     * @return string If an error occurred, the error code will be set here.
+     */
+    public function getErrorCode(): string
+    {
+        return $this->errorCode;
+    }
+
+    /**
+     * @return string If an error occurred, the error message will be set here.
+     */
+    public function getErrorMessage(): string
+    {
+        return $this->errorMessage;
     }
 }

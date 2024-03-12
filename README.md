@@ -5,7 +5,7 @@ This project is intended to ease the use of the privacyIDEA server REST API.
 ## Requirements
 
 Curl is required for this project to work. If this project is installed using composer, curl is installed automatically.
-A PHP Version >=7.3 is preferred.
+A PHP Version >=8.0 is preferred.
 
 ## Composer
 

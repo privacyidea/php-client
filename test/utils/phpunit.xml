@@ -12,7 +12,6 @@
 	</coverage>
 	<testsuites>
 		<testsuite name="main">
-			<directory suffix="EnrollTokenTest.php">../</directory>
 			<directory suffix="PollTransactionTest.php">../</directory>
 			<directory suffix="TriggerChallengeTest.php">../</directory>
 			<directory suffix="ValidateCheckTest.php">../</directory>
