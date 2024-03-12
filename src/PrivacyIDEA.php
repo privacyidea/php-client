@@ -360,7 +360,6 @@ class PrivacyIDEA
                 return $response['result']['value']['token'];
             }
         }
-
         $this->debugLog("/auth response did not contain the auth token.");
         return "";
     }
